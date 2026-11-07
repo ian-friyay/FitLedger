@@ -118,4 +118,12 @@ class Member extends Model
     {
         return $query->where('status', MemberStatus::Active->value);
     }
+
+    /**
+     * Get the full URL to the member's public digital pass.
+     */
+    public function passUrl(): string
+    {
+        return route('portal.pass', ['qr_code' => $this->qr_code]);
+    }
 }

@@ -57,6 +57,7 @@ class FilamentPanelTest extends TestCase
         $this->get("{$base}/plans")->assertSuccessful();
         $this->get("{$base}/payments")->assertSuccessful();
         $this->get("{$base}/check-ins")->assertSuccessful();
+        $this->get("{$base}/scan")->assertSuccessful();
         $this->get("{$base}/users")->assertSuccessful();
         $this->get("{$base}/profile")->assertSuccessful();
     }
@@ -88,5 +89,19 @@ class FilamentPanelTest extends TestCase
         $this->actingAs($admin)
             ->get("/admin/{$this->gym->slug}/gyms")
             ->assertSuccessful();
+    }
+
+    public function test_new_user_can_view_gym_registration_page(): void
+    {
+        $newUser = User::factory()->create([
+            'gym_id' => null,
+            'is_platform_admin' => false,
+            'is_active' => true,
+        ]);
+
+        $this->actingAs($newUser)
+            ->get('/admin/new')
+            ->assertSuccessful()
+            ->assertSee('Register gym');
     }
 }

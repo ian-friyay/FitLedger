@@ -189,6 +189,22 @@ class CheckInTest extends TestCase
         ]);
     }
 
+    public function test_scanner_accepts_full_pass_url(): void
+    {
+        $member = $this->member();
+        $this->subscription($member, today()->subDays(5), today()->addDays(10), PaymentStatus::Paid);
+
+        $url = "https://fitledger.test/pass/{$member->qr_code}";
+
+        $response = $this->scanRaw($url);
+
+        $response
+            ->assertOk()
+            ->assertJsonPath('status', 'active')
+            ->assertJsonPath('allows_entry', true)
+            ->assertJsonPath('member.name', $member->name);
+    }
+
     private function scan(Member $member): TestResponse
     {
         return $this->scanRaw($member->qr_code);

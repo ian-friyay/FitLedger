@@ -57,6 +57,10 @@ class User extends Authenticatable implements FilamentUser, HasTenants
             return true;
         }
 
+        if (is_null($this->gym_id)) {
+            return true;
+        }
+
         return $this->gym?->is_active === true;
     }
 

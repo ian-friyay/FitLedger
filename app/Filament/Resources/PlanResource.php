@@ -18,9 +18,13 @@ class PlanResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-list';
 
-    protected static ?string $navigationGroup = 'Settings';
+    protected static ?string $navigationGroup = 'Billing';
 
-    protected static ?int $navigationSort = 2;
+    protected static ?string $navigationLabel = 'Subscription Plans';
+
+    protected static ?string $modelLabel = 'subscription plan';
+
+    protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
     {

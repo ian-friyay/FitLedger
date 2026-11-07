@@ -17,6 +17,7 @@ class Gym extends Model implements HasName
     protected $fillable = [
         'name',
         'slug',
+        'logo_path',
         'address',
         'city',
         'province',
@@ -119,6 +120,18 @@ class Gym extends Model implements HasName
             'closing_time' => config('fitledger.schedules.default_closing_time', '22:00'),
             'operating_days' => config('fitledger.schedules.operating_days', []),
         ];
+    }
+
+    /**
+     * Get the public URL for the gym's custom logo.
+     */
+    public function getLogoUrl(): ?string
+    {
+        if (blank($this->logo_path)) {
+            return null;
+        }
+
+        return \Illuminate\Support\Facades\Storage::disk('public')->url($this->logo_path);
     }
 
     /**

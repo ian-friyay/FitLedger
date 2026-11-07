@@ -11,9 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('gyms', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+        Schema::table('gyms', function (Blueprint $table) {
+            $table->string('logo_path')->nullable()->after('slug');
         });
     }
 
@@ -22,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('gyms');
+        Schema::table('gyms', function (Blueprint $table) {
+            $table->dropColumn('logo_path');
+        });
     }
 };
