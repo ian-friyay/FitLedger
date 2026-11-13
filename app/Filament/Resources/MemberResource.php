@@ -160,22 +160,26 @@ class MemberResource extends Resource
                 Tables\Filters\TrashedFilter::make(),
             ])
             ->actions([
-                Tables\Actions\Action::make('qrCode')
-                    ->label('QR')
-                    ->icon('heroicon-o-qr-code')
-                    ->color('gray')
-                    ->modalHeading(fn (Member $record): string => "QR code - {$record->name}")
-                    ->modalContent(fn (Member $record) => view('filament.members.qr-code', [
-                        'member' => $record,
-                        'size' => 260,
-                    ]))
-                    ->modalSubmitAction(false)
-                    ->modalCancelActionLabel('Close'),
-                static::gcashCheckoutAction(),
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
-                Tables\Actions\RestoreAction::make(),
-                Tables\Actions\ForceDeleteAction::make(),
+                Tables\Actions\ActionGroup::make([
+                    Tables\Actions\Action::make('qrCode')
+                        ->label('View QR Code')
+                        ->icon('heroicon-o-qr-code')
+                        ->color('gray')
+                        ->modalHeading(fn (Member $record): string => "QR code - {$record->name}")
+                        ->modalContent(fn (Member $record) => view('filament.members.qr-code', [
+                            'member' => $record,
+                            'size' => 260,
+                        ]))
+                        ->modalSubmitAction(false)
+                        ->modalCancelActionLabel('Close'),
+                    static::gcashCheckoutAction(),
+                    Tables\Actions\EditAction::make(),
+                    Tables\Actions\DeleteAction::make(),
+                    Tables\Actions\RestoreAction::make(),
+                    Tables\Actions\ForceDeleteAction::make(),
+                ])
+                ->tooltip('Actions')
+                ->icon('heroicon-m-ellipsis-vertical'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

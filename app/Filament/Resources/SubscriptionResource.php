@@ -198,23 +198,27 @@ class SubscriptionResource extends Resource
                     ])),
             ])
             ->actions([
-                static::gcashCheckoutAction(),
-                Tables\Actions\Action::make('markPaid')
-                    ->label('Mark paid')
-                    ->icon('heroicon-o-banknotes')
-                    ->color('success')
-                    ->requiresConfirmation()
-                    ->visible(fn (Subscription $record): bool => $record->payment_status !== PaymentStatus::Paid)
-                    ->action(function (Subscription $record): void {
-                        $record->markPaid();
+                Tables\Actions\ActionGroup::make([
+                    static::gcashCheckoutAction(),
+                    Tables\Actions\Action::make('markPaid')
+                        ->label('Mark paid')
+                        ->icon('heroicon-o-banknotes')
+                        ->color('success')
+                        ->requiresConfirmation()
+                        ->visible(fn (Subscription $record): bool => $record->payment_status !== PaymentStatus::Paid)
+                        ->action(function (Subscription $record): void {
+                            $record->markPaid();
 
-                        Notification::make()
-                            ->success()
-                            ->title('Subscription marked as paid')
-                            ->send();
-                    }),
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                            Notification::make()
+                                ->success()
+                                ->title('Subscription marked as paid')
+                                ->send();
+                        }),
+                    Tables\Actions\EditAction::make(),
+                    Tables\Actions\DeleteAction::make(),
+                ])
+                ->tooltip('Actions')
+                ->icon('heroicon-m-ellipsis-vertical'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

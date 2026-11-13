@@ -42,7 +42,7 @@
 
     <!-- Top Status / Brand Bar -->
     <header class="sticky top-0 z-40 bg-[#0a0c10]/90 backdrop-blur-md border-b border-white/5">
-        <div class="max-w-md mx-auto px-5 h-16 flex items-center justify-between">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
             <a href="{{ route('portal.lookup') }}" class="flex items-center gap-3 group">
                 <img src="{{ asset('images/fitledger-logo.jpg') }}" alt="FitLedger" class="h-9 w-auto object-contain rounded-xl shadow-md shadow-orange-500/20 group-hover:scale-105 transition transform">
                 <div>
@@ -52,12 +52,13 @@
             </a>
 
             <div class="flex items-center gap-2">
-                <a href="{{ route('portal.lookup') }}" class="w-9 h-9 rounded-2xl bg-[#161920] border border-white/5 flex items-center justify-center text-slate-400 hover:text-white transition" title="Search Pass">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <a href="{{ route('portal.lookup') }}" class="px-3 py-1.5 rounded-xl bg-[#161920] border border-white/5 text-xs font-semibold text-slate-300 hover:text-white transition flex items-center gap-1.5" title="Search Pass">
+                    <svg class="w-3.5 h-3.5 text-[#FF7A00]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                     </svg>
+                    <span class="hidden sm:inline">Find Pass</span>
                 </a>
-                <a href="/admin" class="px-3 py-1.5 rounded-2xl bg-[#161920] border border-white/5 text-xs font-bold text-slate-300 hover:text-white transition flex items-center gap-1.5" title="Staff Portal">
+                <a href="/admin" class="px-3 py-1.5 rounded-xl bg-[#161920] border border-white/5 text-xs font-bold text-slate-300 hover:text-white transition flex items-center gap-1.5" title="Staff Portal">
                     <span>Staff</span>
                     <span class="text-[#FF7A00]">&rarr;</span>
                 </a>
@@ -65,8 +66,8 @@
         </div>
     </header>
 
-    <!-- Main Mobile Shell Container -->
-    <main class="flex-1 max-w-md mx-auto w-full px-4 pt-5 pb-8">
+    <!-- Main Container Responsive Shell -->
+    <main class="flex-1 max-w-5xl mx-auto w-full px-4 sm:px-6 pt-6 pb-20">
         @if (session('error'))
             <div class="mb-4 p-4 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-300 text-xs flex items-center gap-3">
                 <div class="w-7 h-7 rounded-xl bg-rose-500/20 flex items-center justify-center flex-shrink-0 text-rose-400 font-bold">!</div>

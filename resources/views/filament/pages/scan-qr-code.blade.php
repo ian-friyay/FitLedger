@@ -85,17 +85,17 @@
             <div class="lg:col-span-2 space-y-6">
 
                 <!-- Camera Scanner Panel -->
-                <div class="rounded-2xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 p-6 shadow-sm">
+                <div class="rounded-2xl p-6 shadow-xl" style="background-color: #12151b; border: 1px solid rgba(255, 255, 255, 0.07); border-radius: 1.25rem;">
                     <div class="flex items-center justify-between mb-4">
                         <div>
-                            <h3 class="text-base font-bold text-gray-950 dark:text-white flex items-center gap-2">
-                                <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <h3 class="text-base font-bold text-white flex items-center gap-2">
+                                <svg class="w-5 h-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/>
                                 </svg>
-                                <span>Live Camera Scanner</span>
+                                <span class="font-athletic text-xl tracking-wider text-white">Live Camera Scanner</span>
                             </h3>
-                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                            <p class="text-xs text-zinc-400 mt-0.5">
                                 Point a member's QR code or digital mobile pass towards your webcam.
                             </p>
                         </div>
@@ -103,30 +103,33 @@
                         <div class="flex items-center gap-2">
                             <button type="button" id="start-scan-btn"
                                 onclick="startCamera()"
-                                class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white transition flex items-center gap-1.5 shadow-sm">
-                                <span class="w-2 h-2 rounded-full bg-emerald-300 animate-pulse"></span>
+                                class="px-4 py-2 rounded-xl text-xs font-bold text-white transition flex items-center gap-1.5 shadow-md"
+                                style="background: linear-gradient(135deg, #FF6D00 0%, #FF3D00 100%);">
+                                <span class="w-2 h-2 rounded-full bg-white animate-pulse"></span>
                                 <span>Start Camera</span>
                             </button>
                             <button type="button" id="stop-scan-btn"
                                 onclick="stopCamera()"
-                                style="display: none;"
-                                class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-gray-700 hover:bg-gray-600 text-white transition">
+                                style="display: none; background-color: #27272a;"
+                                class="px-4 py-2 rounded-xl text-xs font-bold text-zinc-300 hover:text-white transition">
                                 Stop Camera
                             </button>
                         </div>
                     </div>
 
                     <!-- Viewfinder container -->
-                    <div class="relative rounded-xl overflow-hidden bg-gray-950 min-h-[300px] flex items-center justify-center border border-gray-800">
+                    <div class="relative rounded-xl overflow-hidden min-h-[300px] flex items-center justify-center"
+                        style="background-color: #0a0c10; border: 1px solid rgba(255, 255, 255, 0.08);">
                         <div id="reader" class="w-full"></div>
                         <div id="camera-idle-placeholder" class="text-center p-8 space-y-3">
-                            <div class="w-16 h-16 mx-auto rounded-2xl bg-gray-800/80 border border-gray-700 flex items-center justify-center text-gray-400">
-                                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <div class="w-16 h-16 mx-auto rounded-2xl flex items-center justify-center text-zinc-400"
+                                style="background-color: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.08);">
+                                <svg class="w-8 h-8 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/>
                                 </svg>
                             </div>
-                            <div class="text-sm font-semibold text-gray-300">Camera is currently paused</div>
-                            <p class="text-xs text-gray-500 max-w-sm mx-auto">
+                            <div class="text-sm font-semibold text-zinc-300">Camera is currently paused</div>
+                            <p class="text-xs text-zinc-500 max-w-sm mx-auto">
                                 Click "Start Camera" above to enable live continuous scanning, or scan using a handheld USB barcode scanner below.
                             </p>
                         </div>
@@ -134,15 +137,15 @@
                 </div>
 
                 <!-- Handheld Gun / Manual Code Input -->
-                <div class="rounded-2xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 p-6 shadow-sm">
-                    <h3 class="text-base font-bold text-gray-950 dark:text-white flex items-center gap-2 mb-1">
-                        <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="rounded-2xl p-6 shadow-xl" style="background-color: #12151b; border: 1px solid rgba(255, 255, 255, 0.07); border-radius: 1.25rem;">
+                    <h3 class="text-base font-bold text-white flex items-center gap-2 mb-1">
+                        <svg class="w-5 h-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/>
                         </svg>
-                        <span>Handheld Barcode Gun or Manual Code</span>
+                        <span class="font-athletic text-xl tracking-wider text-white">Handheld Barcode Gun or Manual Code</span>
                     </h3>
-                    <p class="text-xs text-gray-500 dark:text-gray-400 mb-4">
-                        USB barcode scanners automatically press Enter upon scanning. You can also paste a code or link directly.
+                    <p class="text-xs text-zinc-400 mb-4">
+                        USB barcode scanners automatically press Enter upon scanning. You can also paste a pass URL or type a member code directly.
                     </p>
 
                     <form wire:submit="processScan" class="flex gap-3">
@@ -151,15 +154,17 @@
                                 type="text" 
                                 wire:model="manualCode"
                                 id="manual-code-input"
-                                placeholder="Scan with USB gun, paste pass URL, or type FL-..." 
+                                placeholder="Scan with USB gun, paste pass URL, or type code..." 
                                 autofocus
-                                class="w-full bg-gray-50 dark:bg-gray-950 border border-gray-300 dark:border-gray-700 rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition font-mono"
+                                class="w-full rounded-xl px-4 py-3 text-sm text-white placeholder-zinc-500 focus:outline-none transition font-mono"
+                                style="background-color: #0a0c10; border: 1px solid rgba(255, 255, 255, 0.12);"
                             >
                         </div>
 
                         <button 
                             type="submit"
-                            class="px-5 py-3 rounded-xl font-bold text-sm bg-emerald-600 hover:bg-emerald-500 text-white shadow transition flex items-center gap-1.5 flex-shrink-0">
+                            class="px-6 py-3 rounded-xl font-bold text-sm text-white shadow-lg transition flex items-center gap-2 flex-shrink-0"
+                            style="background: linear-gradient(135deg, #FF6D00 0%, #FF3D00 100%);">
                             <span>Check In</span>
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
@@ -172,16 +177,16 @@
 
             <!-- Recent Check-Ins Today Feed (1 Column) -->
             <div class="space-y-4">
-                <div class="rounded-2xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 p-6 shadow-sm">
+                <div class="rounded-2xl p-6 shadow-xl" style="background-color: #12151b; border: 1px solid rgba(255, 255, 255, 0.07); border-radius: 1.25rem;">
                     <div class="flex items-center justify-between mb-4">
-                        <h3 class="text-base font-bold text-gray-950 dark:text-white flex items-center gap-2">
-                            <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <h3 class="text-base font-bold text-white flex items-center gap-2">
+                            <svg class="w-5 h-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                             </svg>
-                            <span>Live Activity Feed</span>
+                            <span class="font-athletic text-xl tracking-wider text-white">Live Activity Feed</span>
                         </h3>
                         <a href="{{ url('/admin/' . Filament\Facades\Filament::getTenant()?->slug . '/check-ins') }}" 
-                           class="text-xs text-emerald-600 dark:text-emerald-400 hover:underline font-semibold">
+                           class="text-xs text-orange-400 hover:text-orange-300 font-semibold">
                             Full Log &rarr;
                         </a>
                     </div>
@@ -189,25 +194,25 @@
                     @php $recents = $this->recentCheckIns; @endphp
 
                     @if ($recents->isEmpty())
-                        <div class="text-center py-8 text-xs text-gray-500">
+                        <div class="text-center py-8 text-xs text-zinc-500">
                             No check-in activity recorded yet for today.
                         </div>
                     @else
-                        <div class="divide-y divide-gray-100 dark:divide-gray-800/80">
+                        <div class="divide-y divide-zinc-800">
                             @foreach ($recents as $item)
                                 <div class="py-3 flex items-start justify-between gap-3 text-xs">
                                     <div>
-                                        <div class="font-bold text-gray-900 dark:text-white flex items-center gap-1.5">
+                                        <div class="font-bold text-white flex items-center gap-1.5">
                                             <span class="w-2 h-2 rounded-full" style="background-color: {{ $item->status->colorHex() }};"></span>
                                             <span>{{ $item->member?->name ?? 'Unknown Member' }}</span>
                                         </div>
-                                        <div class="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5">
+                                        <div class="text-[11px] text-zinc-400 mt-0.5">
                                             {{ $item->subscription?->plan?->name ?? 'No plan' }} &bull; {{ $item->scanned_at->format('g:i:s A') }}
                                         </div>
                                     </div>
 
                                     <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase"
-                                        style="background-color: {{ $item->status->colorHex() }}20; color: {{ $item->status->colorHex() }};">
+                                        style="background-color: {{ $item->status->colorHex() }}20; color: {{ $item->status->colorHex() }}; border: 1px solid {{ $item->status->colorHex() }}40;">
                                         {{ $item->status->getLabel() }}
                                     </span>
                                 </div>
@@ -216,13 +221,26 @@
                     @endif
                 </div>
 
-                <!-- Front-Desk Quick Tips -->
-                <div class="rounded-2xl bg-gray-50 dark:bg-gray-900/40 border border-gray-200/80 dark:border-gray-800/80 p-5 text-xs text-gray-500 dark:text-gray-400 space-y-2">
-                    <div class="font-bold text-gray-900 dark:text-gray-200">Front Desk Guide</div>
-                    <ul class="space-y-1 list-disc list-inside">
-                        <li><strong>Green (Active)</strong>: Member is allowed entry.</li>
-                        <li><strong>Yellow (Due)</strong>: Collect payment or prompt for renewal.</li>
-                        <li><strong>Red (Expired)</strong>: Deny entry until re-enrolled.</li>
+                <!-- Front-Desk Quick Tips (Matches dark athletic aesthetic) -->
+                <div class="rounded-2xl p-5 text-xs text-zinc-400 space-y-2.5 shadow-lg"
+                    style="background-color: #12151b; border: 1px solid rgba(255, 255, 255, 0.07); border-radius: 1rem;">
+                    <div class="font-athletic text-sm uppercase tracking-wider text-zinc-300 flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-orange-500"></span>
+                        Front Desk Guide
+                    </div>
+                    <ul class="space-y-1.5 text-[11px] text-zinc-400">
+                        <li class="flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500 flex-shrink-0"></span>
+                            <span><strong class="text-emerald-400">Green (Active)</strong>: Allowed entry immediately.</span>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-amber-400 flex-shrink-0"></span>
+                            <span><strong class="text-amber-300">Yellow (Due)</strong>: Expiring soon or collect pending payment.</span>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-rose-500 flex-shrink-0"></span>
+                            <span><strong class="text-rose-400">Red (Expired)</strong>: Deny entry until pass is renewed.</span>
+                        </li>
                     </ul>
                 </div>
             </div>

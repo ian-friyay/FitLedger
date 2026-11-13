@@ -74,9 +74,13 @@ class UserResource extends Resource
                     ->label('Active'),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make()
-                    ->visible(fn (User $record): bool => $record->getKey() !== auth()->id()),
+                Tables\Actions\ActionGroup::make([
+                    Tables\Actions\EditAction::make(),
+                    Tables\Actions\DeleteAction::make()
+                        ->visible(fn (User $record): bool => $record->getKey() !== auth()->id()),
+                ])
+                ->tooltip('Actions')
+                ->icon('heroicon-m-ellipsis-vertical'),
             ])
             ->defaultSort('name');
     }

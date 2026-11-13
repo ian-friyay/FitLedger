@@ -14,6 +14,17 @@ class RegisterGym extends RegisterTenant
         return 'Register gym';
     }
 
+    public static function canView(): bool
+    {
+        $user = auth()->user();
+
+        if ($user?->is_platform_admin) {
+            return true;
+        }
+
+        return is_null($user?->gym_id);
+    }
+
     public function form(Form $form): Form
     {
         return $form

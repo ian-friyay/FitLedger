@@ -20,9 +20,11 @@ class PlanResource extends Resource
 
     protected static ?string $navigationGroup = 'Billing';
 
-    protected static ?string $navigationLabel = 'Subscription Plans';
+    protected static ?string $navigationLabel = 'Membership Plans';
 
-    protected static ?string $modelLabel = 'subscription plan';
+    protected static ?string $modelLabel = 'membership plan';
+
+    protected static ?string $pluralModelLabel = 'membership plans';
 
     protected static ?int $navigationSort = 1;
 
@@ -91,10 +93,14 @@ class PlanResource extends Resource
                 Tables\Filters\TrashedFilter::make(),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
-                Tables\Actions\RestoreAction::make(),
-                Tables\Actions\ForceDeleteAction::make(),
+                Tables\Actions\ActionGroup::make([
+                    Tables\Actions\EditAction::make(),
+                    Tables\Actions\DeleteAction::make(),
+                    Tables\Actions\RestoreAction::make(),
+                    Tables\Actions\ForceDeleteAction::make(),
+                ])
+                ->tooltip('Actions')
+                ->icon('heroicon-m-ellipsis-vertical'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
