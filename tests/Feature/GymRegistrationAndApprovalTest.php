@@ -111,4 +111,84 @@ class GymRegistrationAndApprovalTest extends TestCase
         $this->assertTrue($pendingGym->isSubscribed());
         $this->assertEquals('Active (Subscribed)', $pendingGym->accessStatusLabel());
     }
+
+    public function test_platform_admin_can_revoke_gym_subscription(): void
+    {
+        $admin = User::factory()->create([
+            'email' => 'admin@fitledger.test',
+            'is_platform_admin' => true,
+            'is_active' => true,
+        ]);
+
+        $gym = Gym::factory()->create([
+            'name' => 'CrossFit Manila',
+            'subscription_plan' => 'monthly',
+            'subscription_status' => 'active',
+            'subscription_ends_at' => today()->addDays(25),
+            'is_active' => true,
+        ]);
+
+        $this->assertTrue($gym->hasActiveAccess());
+
+        $this->actingAs($admin);
+
+        // Revoke the subscription
+        $gym->is_active = false;
+        $gym->subscription_status = 'suspended';
+        $gym->trial_ends_at = null;
+        $gym->subscription_ends_at = null;
+        $gym->save();
+
+        $gym->refresh();
+        $this->assertFalse($gym->hasActiveAccess());
+        $this->assertEquals('Suspended / Revoked', $gym->accessStatusLabel());
+    }
+
+    public function test_platform_admin_can_delete_gym_owner_account(): void
+    {
+        $admin = User::factory()->create([
+            'email' => 'admin@fitledger.test',
+            'is_platform_admin' => true,
+            'is_active' => true,
+        ]);
+
+        $owner = User::factory()->create([
+            'email' => 'owner.to.delete@example.com',
+            'name' => 'John Doe',
+            'is_platform_admin' => false,
+            'is_active' => true,
+        ]);
+
+        $gym = Gym::factory()->create([
+            'owner_email' => $owner->email,
+            'owner_name' => $owner->name,
+        ]);
+
+        $this->actingAs($admin);
+
+        $this->assertDatabaseHas('users', ['email' => 'owner.to.delete@example.com']);
+
+        // Admin deletes the owner user account
+        User::where('email', $gym->owner_email)
+            ->where('is_platform_admin', false)
+            ->delete();
+
+        $this->assertDatabaseMissing('users', ['email' => 'owner.to.delete@example.com']);
+    }
+
+    public function test_platform_admin_can_access_platform_user_resource(): void
+    {
+        $admin = User::factory()->create([
+            'email' => 'admin@fitledger.test',
+            'is_platform_admin' => true,
+            'is_active' => true,
+        ]);
+
+        $gym = Gym::factory()->create();
+
+        $this->actingAs($admin);
+
+        $response = $this->get("/admin/{$gym->slug}/platform-users");
+        $response->assertSuccessful();
+    }
 }

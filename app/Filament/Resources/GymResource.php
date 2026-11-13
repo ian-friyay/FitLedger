@@ -259,6 +259,56 @@ class GymResource extends Resource
                                 ->send();
                         }),
 
+                    Tables\Actions\Action::make('revokeSubscription')
+                        ->label('Revoke Subscription')
+                        ->icon('heroicon-o-no-symbol')
+                        ->color('danger')
+                        ->requiresConfirmation()
+                        ->modalHeading(fn (Gym $record) => "Revoke Subscription: {$record->name}")
+                        ->modalDescription('Are you sure you want to revoke the subscription of this gym? The gym will be deactivated immediately and locked out of all operational dashboard, scanner, and portal features.')
+                        ->visible(fn (Gym $record): bool => $record->is_active || in_array($record->subscription_status, ['active', 'trialing']) || $record->hasActiveAccess())
+                        ->action(function (Gym $record): void {
+                            $record->is_active = false;
+                            $record->subscription_status = 'suspended';
+                            $record->trial_ends_at = null;
+                            $record->subscription_ends_at = null;
+                            $record->save();
+
+                            Notification::make()
+                                ->danger()
+                                ->title('Subscription Revoked')
+                                ->body("Platform subscription for {$record->name} has been revoked and deactivated.")
+                                ->send();
+                        }),
+
+                    Tables\Actions\Action::make('deleteOwnerAccount')
+                        ->label('Delete Owner Account')
+                        ->icon('heroicon-o-user-minus')
+                        ->color('danger')
+                        ->requiresConfirmation()
+                        ->modalHeading(fn (Gym $record) => "Delete Owner Account: {$record->owner_email}")
+                        ->modalDescription(fn (Gym $record) => "Permanently delete the login user account for {$record->owner_name} ({$record->owner_email})? They will no longer be able to log in to FitLedger.")
+                        ->visible(fn (Gym $record): bool => filled($record->owner_email) && User::where('email', $record->owner_email)->where('is_platform_admin', false)->exists())
+                        ->action(function (Gym $record): void {
+                            $deleted = User::where('email', $record->owner_email)
+                                ->where('is_platform_admin', false)
+                                ->delete();
+
+                            if ($deleted) {
+                                Notification::make()
+                                    ->success()
+                                    ->title('Owner Account Deleted')
+                                    ->body("User account for {$record->owner_email} was permanently deleted.")
+                                    ->send();
+                            } else {
+                                Notification::make()
+                                    ->warning()
+                                    ->title('Account Not Found')
+                                    ->body("No non-admin user account found matching {$record->owner_email}.")
+                                    ->send();
+                            }
+                        }),
+
                     Tables\Actions\EditAction::make(),
                     Tables\Actions\DeleteAction::make(),
                 ])

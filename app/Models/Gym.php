@@ -184,7 +184,7 @@ class Gym extends Model implements HasName
      */
     public function hasActiveAccess(): bool
     {
-        if ($this->subscription_status === 'pending_approval' || $this->subscription_status === 'rejected') {
+        if (in_array($this->subscription_status, ['pending_approval', 'rejected', 'suspended'])) {
             return false;
         }
 
@@ -202,6 +202,10 @@ class Gym extends Model implements HasName
 
         if ($this->subscription_status === 'rejected') {
             return 'Registration Rejected';
+        }
+
+        if ($this->subscription_status === 'suspended') {
+            return 'Suspended / Revoked';
         }
 
         if (! $this->is_active) {

@@ -90,6 +90,11 @@ class UserResource extends Resource
         return ! (auth()->user()?->is_platform_admin ?? false);
     }
 
+    public static function shouldRegisterNavigation(): bool
+    {
+        return ! (auth()->user()?->is_platform_admin ?? false);
+    }
+
     public static function getPages(): array
     {
         return [

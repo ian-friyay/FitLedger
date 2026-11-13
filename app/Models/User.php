@@ -83,4 +83,21 @@ class User extends Authenticatable implements FilamentUser, HasTenants
     {
         return $this->is_platform_admin;
     }
+
+    public function getRoleName(): string
+    {
+        if ($this->is_platform_admin) {
+            return 'Platform Admin';
+        }
+
+        if (Gym::where('owner_email', $this->email)->exists()) {
+            return 'Gym Owner';
+        }
+
+        if ($this->gym_id !== null) {
+            return 'Staff';
+        }
+
+        return 'User';
+    }
 }
