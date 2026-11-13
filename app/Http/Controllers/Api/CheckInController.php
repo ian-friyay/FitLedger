@@ -48,13 +48,13 @@ class CheckInController extends Controller
             ], 404);
         }
 
-        if (! $member->gym?->is_active) {
+        if (! $member->gym?->hasActiveAccess()) {
             return response()->json([
                 'status' => 'inactive',
                 'color' => 'red',
                 'color_hex' => '#dc2626',
                 'allows_entry' => false,
-                'message' => 'This gym account is inactive.',
+                'message' => 'This gym account is inactive or its FitLedger platform subscription has expired.',
                 'member' => $this->memberPayload($member),
             ], 403);
         }

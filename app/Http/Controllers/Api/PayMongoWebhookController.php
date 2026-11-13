@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\GymPayment;
 use App\Models\Payment;
 use App\Services\PayMongoService;
 use Illuminate\Http\JsonResponse;
@@ -78,6 +79,27 @@ class PayMongoWebhookController extends Controller
             ->first();
 
         if (! $payment) {
+            $gymPayment = GymPayment::query()
+                ->where('provider_checkout_id', $checkoutId)
+                ->first();
+
+            if ($gymPayment) {
+                $providerPayment = collect(data_get($session, 'attributes.payments', []))
+                    ->firstWhere('status', 'paid')
+                    ?? data_get($session, 'attributes.payments.0');
+
+                $amount = $this->amountFromCentavos(data_get($providerPayment, 'attributes.amount'));
+
+                $gymPayment->markPaid(
+                    amount: $amount ?? (float) $gymPayment->amount,
+                    providerPaymentId: data_get($providerPayment, 'id'),
+                    method: data_get($providerPayment, 'attributes.source.type', 'gcash'),
+                    payload: $event,
+                );
+
+                return;
+            }
+
             Log::warning('PayMongo checkout payment received for unknown session.', [
                 'checkout_id' => $checkoutId,
             ]);
@@ -116,6 +138,23 @@ class PayMongoWebhookController extends Controller
             ->first();
 
         if (! $payment) {
+            $gymPayment = GymPayment::query()
+                ->when($paymentId, fn ($query) => $query->whereKey($paymentId))
+                ->when(! $paymentId && $reference, fn ($query) => $query->where('reference_number', $reference))
+                ->when(! $paymentId && ! $reference, fn ($query) => $query->where('provider_payment_id', $resource['id'] ?? ''))
+                ->first();
+
+            if ($gymPayment) {
+                $gymPayment->markPaid(
+                    amount: $this->amountFromCentavos(data_get($resource, 'attributes.amount')) ?? (float) $gymPayment->amount,
+                    providerPaymentId: $resource['id'] ?? null,
+                    method: data_get($resource, 'attributes.source.type', 'gcash'),
+                    payload: $event,
+                );
+
+                return;
+            }
+
             Log::warning('PayMongo payment.paid event could not be matched.', [
                 'payment_id' => $resource['id'] ?? null,
                 'reference' => $reference,
@@ -142,7 +181,16 @@ class PayMongoWebhookController extends Controller
             ->where('provider_payment_id', $resource['id'] ?? '')
             ->first();
 
-        $payment?->markFailed('failed', $event);
+        if ($payment) {
+            $payment->markFailed('failed', $event);
+            return;
+        }
+
+        $gymPayment = GymPayment::query()
+            ->where('provider_payment_id', $resource['id'] ?? '')
+            ->first();
+
+        $gymPayment?->markFailed('failed', $event);
     }
 
     private function amountFromCentavos(mixed $amount): ?float

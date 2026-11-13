@@ -36,4 +36,32 @@ return [
         'operating_days' => ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
     ],
 
+    'saas' => [
+        /*
+         * Default trial period in days for newly registered gyms.
+         */
+        'trial_days' => (int) env('FITLEDGER_TRIAL_DAYS', 14),
+
+        /*
+         * Available platform-wide SaaS subscription plans.
+         * Every plan provides 100% full access to the entire platform.
+         */
+        'plans' => [
+            'monthly' => [
+                'name' => 'Monthly All-Access Pass',
+                'description' => 'Complete, unrestricted access to all FitLedger features for 30 days.',
+                'price' => (float) env('FITLEDGER_MONTHLY_PRICE', 1499.00),
+                'days' => 30,
+                'badge' => 'Most Flexible',
+            ],
+            'annual' => [
+                'name' => 'Annual All-Access Pass',
+                'description' => 'Complete, unrestricted access to all FitLedger features for 365 days (save ₱2,989/year).',
+                'price' => (float) env('FITLEDGER_ANNUAL_PRICE', 14999.00),
+                'days' => 365,
+                'badge' => 'Best Value (Save 17%)',
+            ],
+        ],
+    ],
+
 ];

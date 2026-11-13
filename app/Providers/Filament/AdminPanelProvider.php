@@ -6,6 +6,7 @@ use App\Filament\Pages\Tenancy\EditGymProfile;
 use App\Filament\Pages\Tenancy\RegisterGym;
 use App\Filament\Widgets\LatestCheckIns;
 use App\Filament\Widgets\StatsOverview;
+use App\Http\Middleware\EnsureGymSubscriptionActive;
 use App\Models\Gym;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -52,6 +53,9 @@ class AdminPanelProvider extends PanelProvider
             ->tenant(Gym::class, slugAttribute: 'slug')
             ->tenantRegistration(RegisterGym::class)
             ->tenantProfile(EditGymProfile::class)
+            ->tenantMiddleware([
+                EnsureGymSubscriptionActive::class,
+            ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([

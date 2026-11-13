@@ -28,6 +28,9 @@ class Gym extends Model implements HasName
         'owner_phone',
         'is_active',
         'trial_ends_at',
+        'subscription_ends_at',
+        'subscription_plan',
+        'subscription_status',
         'settings',
     ];
 
@@ -36,6 +39,7 @@ class Gym extends Model implements HasName
         return [
             'is_active' => 'boolean',
             'trial_ends_at' => 'date',
+            'subscription_ends_at' => 'date',
             'settings' => 'array',
         ];
     }
@@ -148,5 +152,84 @@ class Gym extends Model implements HasName
 
         $currentTime = now()->format('H:i');
         return $currentTime >= $schedule['opening_time'] && $currentTime <= $schedule['closing_time'];
+    }
+
+    public function gymPayments(): HasMany
+    {
+        return $this->hasMany(GymPayment::class);
+    }
+
+    /**
+     * Check if the gym is currently running on an active free trial.
+     */
+    public function isOnTrial(): bool
+    {
+        return $this->trial_ends_at !== null && $this->trial_ends_at->isFuture();
+    }
+
+    /**
+     * Check if the gym currently has an active paid SaaS platform subscription.
+     */
+    public function isSubscribed(): bool
+    {
+        return $this->subscription_ends_at !== null && $this->subscription_ends_at->isFuture();
+    }
+
+    /**
+     * Check if the gym has active platform access (either trial or paid subscription).
+     */
+    public function hasActiveAccess(): bool
+    {
+        return $this->is_active && ($this->isOnTrial() || $this->isSubscribed());
+    }
+
+    /**
+     * Human-readable label for the gym's platform access status.
+     */
+    public function accessStatusLabel(): string
+    {
+        if (! $this->is_active) {
+            return 'Suspended';
+        }
+
+        if ($this->isSubscribed()) {
+            return 'Active (Subscribed)';
+        }
+
+        if ($this->isOnTrial()) {
+            return 'Active (Trial)';
+        }
+
+        if ($this->trial_ends_at && $this->trial_ends_at->isPast()) {
+            return 'Trial Expired';
+        }
+
+        return 'Subscription Expired';
+    }
+
+    /**
+     * Get the expiration date of the current active period (trial or subscription).
+     */
+    public function accessExpiryDate(): ?\Illuminate\Support\Carbon
+    {
+        if ($this->isSubscribed()) {
+            return $this->subscription_ends_at;
+        }
+
+        return $this->trial_ends_at;
+    }
+
+    /**
+     * Days remaining until the gym's access expires.
+     */
+    public function daysRemaining(): int
+    {
+        $expiry = $this->accessExpiryDate();
+
+        if (! $expiry) {
+            return 0;
+        }
+
+        return max(0, (int) today()->diffInDays($expiry, false));
     }
 }

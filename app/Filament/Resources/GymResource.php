@@ -80,13 +80,23 @@ class GymResource extends Resource
                             ->helperText('The owner signs in with the email specified above.'),
                     ])
                     ->columns(2),
-                Forms\Components\Section::make('Subscription')
+                Forms\Components\Section::make('Platform Subscription & Billing')
                     ->schema([
                         Forms\Components\Toggle::make('is_active')
                             ->label('Gym account is active')
                             ->default(true),
                         Forms\Components\DatePicker::make('trial_ends_at')
+                            ->label('Trial ends at')
                             ->native(false),
+                        Forms\Components\DatePicker::make('subscription_ends_at')
+                            ->label('Paid subscription ends at')
+                            ->native(false),
+                        Forms\Components\Select::make('subscription_plan')
+                            ->label('Platform Plan')
+                            ->options([
+                                'monthly' => 'Monthly All-Access Pass',
+                                'annual' => 'Annual All-Access Pass',
+                            ]),
                         Forms\Components\TextInput::make('scanner_key')
                             ->label('Front-desk scanner key')
                             ->disabled()
@@ -119,6 +129,15 @@ class GymResource extends Resource
                 Tables\Columns\TextColumn::make('members_count')
                     ->label('Members')
                     ->counts('members'),
+                Tables\Columns\TextColumn::make('access_status')
+                    ->label('Access Status')
+                    ->badge()
+                    ->state(fn (Gym $record): string => $record->accessStatusLabel())
+                    ->color(fn (string $state): string => match ($state) {
+                        'Active (Subscribed)' => 'success',
+                        'Active (Trial)' => 'warning',
+                        default => 'danger',
+                    }),
                 Tables\Columns\IconColumn::make('is_active')
                     ->label('Active')
                     ->boolean(),

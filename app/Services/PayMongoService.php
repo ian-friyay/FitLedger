@@ -4,8 +4,11 @@ namespace App\Services;
 
 use App\Enums\PaymentState;
 use App\Exceptions\PayMongoException;
+use App\Models\Gym;
+use App\Models\GymPayment;
 use App\Models\Payment;
 use App\Models\Subscription;
+use App\Models\User;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -73,6 +76,105 @@ class PayMongoService
         ]);
 
         return $payment->refresh();
+    }
+
+    /**
+     * Create a pending SaaS payment and a GCash checkout session for a gym's platform subscription.
+     */
+    public function createGymSaaSCheckout(Gym $gym, string $planKey, User $user): GymPayment
+    {
+        $this->ensureConfigured();
+
+        $plans = config('fitledger.saas.plans', []);
+        $planDetails = $plans[$planKey] ?? null;
+
+        if (! $planDetails) {
+            throw new InvalidArgumentException("Unknown platform plan: {$planKey}");
+        }
+
+        $payment = GymPayment::create([
+            'gym_id' => $gym->id,
+            'user_id' => $user->id,
+            'plan' => $planKey,
+            'provider' => 'paymongo',
+            'amount' => (float) $planDetails['price'],
+            'currency' => 'PHP',
+            'status' => PaymentState::Pending,
+            'payment_method' => 'gcash',
+        ]);
+
+        try {
+            $amountCentavos = (int) round((float) $payment->amount * 100);
+            $reference = $payment->reference_number;
+            $billingUrl = url("/admin/{$gym->slug}/billing");
+            $successUrl = $billingUrl . '?ref=' . urlencode($reference) . '&status=success';
+            $cancelUrl = $billingUrl . '?ref=' . urlencode($reference) . '&status=cancelled';
+
+            $payload = [
+                'data' => [
+                    'attributes' => [
+                        'send_email_receipt' => filled($gym->owner_email ?? $user->email),
+                        'show_description' => true,
+                        'show_line_items' => true,
+                        'description' => mb_substr(
+                            "FitLedger SaaS - {$planDetails['name']} ({$gym->name})",
+                            0,
+                            255
+                        ),
+                        'line_items' => [[
+                            'currency' => 'PHP',
+                            'amount' => $amountCentavos,
+                            'name' => mb_substr($planDetails['name'], 0, 255),
+                            'quantity' => 1,
+                            'description' => mb_substr($planDetails['description'], 0, 255),
+                        ]],
+                        'payment_method_types' => ['gcash'],
+                        'success_url' => $successUrl,
+                        'cancel_url' => $cancelUrl,
+                        'reference_number' => $reference,
+                        'metadata' => [
+                            'type' => 'gym_platform_subscription',
+                            'gym_id' => (string) $gym->id,
+                            'user_id' => (string) $user->id,
+                            'gym_payment_id' => (string) $payment->id,
+                            'plan' => $planKey,
+                            'initiated_at' => now()->toIso8601String(),
+                        ],
+                    ],
+                ],
+            ];
+
+            Log::info('Initiating PayMongo SaaS checkout session for gym', [
+                'gym_id' => $gym->id,
+                'reference_number' => $reference,
+                'plan' => $planKey,
+                'amount_php' => $payment->amount,
+            ]);
+
+            $response = $this->request('post', '/v1/checkout_sessions', $payload);
+            $session = $response->json('data') ?? [];
+
+            $payment->update([
+                'provider_checkout_id' => $session['id'] ?? null,
+                'checkout_url' => $session['attributes']['checkout_url'] ?? null,
+                'payload' => $session,
+            ]);
+
+            return $payment->refresh();
+        } catch (\Throwable $exception) {
+            $payment->update([
+                'status' => PaymentState::Failed,
+                'payload' => ['error' => $exception->getMessage()],
+            ]);
+
+            Log::error('PayMongo gym SaaS checkout creation failed', [
+                'payment_id' => $payment->id,
+                'gym_id' => $gym->id,
+                'error' => $exception->getMessage(),
+            ]);
+
+            throw $exception;
+        }
     }
 
     /**
