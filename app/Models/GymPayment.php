@@ -112,7 +112,7 @@ class GymPayment extends Model
             $gym = $this->gym()->lockForUpdate()->first();
 
             if ($gym) {
-                $plans = config('fitledger.saas.plans', []);
+                $plans = PlatformSetting::getPlans();
                 $planDetails = $plans[$this->plan] ?? null;
                 $days = (int) ($planDetails['days'] ?? 30);
 
@@ -180,7 +180,7 @@ class GymPayment extends Model
             $gym = $this->gym()->lockForUpdate()->first();
 
             if ($gym) {
-                $plans = config('fitledger.saas.plans', []);
+                $plans = PlatformSetting::getPlans();
                 $planDetails = $plans[$this->plan] ?? null;
                 $days = (int) ($planDetails['days'] ?? 30);
 

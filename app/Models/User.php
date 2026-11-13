@@ -49,19 +49,7 @@ class User extends Authenticatable implements FilamentUser, HasTenants
 
     public function canAccessPanel(Panel $panel): bool
     {
-        if (! $this->is_active) {
-            return false;
-        }
-
-        if ($this->is_platform_admin) {
-            return true;
-        }
-
-        if (is_null($this->gym_id)) {
-            return true;
-        }
-
-        return $this->gym?->is_active === true;
+        return (bool) $this->is_active;
     }
 
     public function getTenants(Panel $panel): Collection
@@ -70,7 +58,11 @@ class User extends Authenticatable implements FilamentUser, HasTenants
             return Gym::query()->orderBy('name')->get();
         }
 
-        return $this->gym ? collect([$this->gym]) : collect();
+        return Gym::query()
+            ->where('owner_email', $this->email)
+            ->orWhere('id', $this->gym_id)
+            ->orderBy('name')
+            ->get();
     }
 
     public function canAccessTenant(Model $tenant): bool
@@ -79,9 +71,12 @@ class User extends Authenticatable implements FilamentUser, HasTenants
             return true;
         }
 
-        return $tenant instanceof Gym
-            && $this->gym_id === $tenant->getKey()
-            && $tenant->is_active;
+        if (! ($tenant instanceof Gym)) {
+            return false;
+        }
+
+        return $tenant->owner_email === $this->email
+            || (int) $this->gym_id === (int) $tenant->getKey();
     }
 
     public function isPlatformAdmin(): bool

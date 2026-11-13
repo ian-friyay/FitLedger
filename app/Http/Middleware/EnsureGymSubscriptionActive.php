@@ -49,12 +49,19 @@ class EnsureGymSubscriptionActive
         // If trying to access any other gym resource while expired, redirect to billing page
         $billingUrl = url("/admin/{$tenant->slug}/billing");
 
-        Notification::make()
-            ->title('Subscription Required')
-            ->body('Your FitLedger subscription or free trial has expired. Please select a plan to unlock full access.')
-            ->danger()
-            ->persistent()
-            ->send();
+        if ($tenant->subscription_status === 'pending_approval') {
+            Notification::make()
+                ->title('Registration Pending Approval')
+                ->body('Your gym is currently awaiting platform administrator confirmation. Operational features will unlock once approved.')
+                ->warning()
+                ->send();
+        } else {
+            Notification::make()
+                ->title('Subscription Required')
+                ->body('Your FitLedger subscription or free trial has expired. Please select a plan to unlock full access.')
+                ->danger()
+                ->send();
+        }
 
         return redirect()->to($billingUrl);
     }

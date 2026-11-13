@@ -4,8 +4,11 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\GymResource\Pages;
 use App\Models\Gym;
+use App\Models\PlatformSetting;
+use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -30,6 +33,18 @@ class GymResource extends Resource
     public static function shouldRegisterNavigation(): bool
     {
         return auth()->user()?->is_platform_admin === true;
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        $pending = Gym::query()->where('subscription_status', 'pending_approval')->count();
+
+        return $pending > 0 ? (string) $pending : null;
+    }
+
+    public static function getNavigationBadgeColor(): ?string
+    {
+        return 'warning';
     }
 
     public static function form(Form $form): Form
@@ -85,18 +100,30 @@ class GymResource extends Resource
                         Forms\Components\Toggle::make('is_active')
                             ->label('Gym account is active')
                             ->default(true),
+                        Forms\Components\Select::make('subscription_status')
+                            ->label('Subscription Status')
+                            ->options([
+                                'pending_approval' => 'Pending Approval',
+                                'active' => 'Active',
+                                'suspended' => 'Suspended',
+                                'rejected' => 'Rejected',
+                            ])
+                            ->default('active')
+                            ->required(),
+                        Forms\Components\Select::make('subscription_plan')
+                            ->label('Platform Plan')
+                            ->options([
+                                'trial' => 'Free Trial',
+                                'monthly' => 'Monthly All-Access Pass',
+                                'annual' => 'Annual All-Access Pass',
+                            ])
+                            ->default('trial'),
                         Forms\Components\DatePicker::make('trial_ends_at')
                             ->label('Trial ends at')
                             ->native(false),
                         Forms\Components\DatePicker::make('subscription_ends_at')
                             ->label('Paid subscription ends at')
                             ->native(false),
-                        Forms\Components\Select::make('subscription_plan')
-                            ->label('Platform Plan')
-                            ->options([
-                                'monthly' => 'Monthly All-Access Pass',
-                                'annual' => 'Annual All-Access Pass',
-                            ]),
                         Forms\Components\TextInput::make('scanner_key')
                             ->label('Front-desk scanner key')
                             ->disabled()
@@ -116,9 +143,6 @@ class GymResource extends Resource
                     ->searchable()
                     ->sortable()
                     ->weight('bold'),
-                Tables\Columns\TextColumn::make('slug')
-                    ->toggleable()
-                    ->copyable(),
                 Tables\Columns\TextColumn::make('owner_name')
                     ->label('Owner')
                     ->searchable(),
@@ -126,44 +150,122 @@ class GymResource extends Resource
                     ->label('Owner email')
                     ->searchable()
                     ->toggleable(),
-                Tables\Columns\TextColumn::make('members_count')
-                    ->label('Members')
-                    ->counts('members'),
+                Tables\Columns\TextColumn::make('subscription_plan')
+                    ->label('Plan')
+                    ->badge()
+                    ->formatStateUsing(fn (?string $state): string => match ($state) {
+                        'monthly' => 'Monthly',
+                        'annual' => 'Annual',
+                        'trial' => 'Trial',
+                        default => $state ? ucfirst($state) : 'Trial',
+                    })
+                    ->color(fn (?string $state): string => match ($state) {
+                        'annual' => 'warning',
+                        'monthly' => 'primary',
+                        default => 'gray',
+                    }),
                 Tables\Columns\TextColumn::make('access_status')
                     ->label('Access Status')
                     ->badge()
                     ->state(fn (Gym $record): string => $record->accessStatusLabel())
                     ->color(fn (string $state): string => match ($state) {
                         'Active (Subscribed)' => 'success',
-                        'Active (Trial)' => 'warning',
+                        'Active (Trial)' => 'info',
+                        'Pending Admin Approval' => 'warning',
+                        'Registration Rejected' => 'danger',
                         default => 'danger',
                     }),
                 Tables\Columns\IconColumn::make('is_active')
                     ->label('Active')
                     ->boolean(),
-                Tables\Columns\TextColumn::make('trial_ends_at')
-                    ->label('Trial ends')
-                    ->date('M j, Y')
-                    ->placeholder('—')
+                Tables\Columns\TextColumn::make('days_left')
+                    ->label('Days Left')
+                    ->state(fn (Gym $record): string => $record->hasActiveAccess() ? $record->daysRemaining().'d' : '0d')
+                    ->badge()
+                    ->color(fn (Gym $record): string => $record->daysRemaining() > 5 ? 'success' : ($record->daysRemaining() > 0 ? 'warning' : 'danger')),
+                Tables\Columns\TextColumn::make('members_count')
+                    ->label('Members')
+                    ->counts('members')
                     ->toggleable(),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label('Registered')
                     ->date('M j, Y')
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->sortable(),
             ])
             ->filters([
+                Tables\Filters\SelectFilter::make('subscription_status')
+                    ->options([
+                        'pending_approval' => 'Pending Approval',
+                        'active' => 'Active',
+                        'rejected' => 'Rejected',
+                    ]),
                 Tables\Filters\TernaryFilter::make('is_active')
                     ->label('Active'),
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([
+                    Tables\Actions\Action::make('approveGym')
+                        ->label('Approve Gym')
+                        ->icon('heroicon-o-check-circle')
+                        ->color('success')
+                        ->requiresConfirmation()
+                        ->modalHeading(fn (Gym $record) => "Approve Gym: {$record->name}")
+                        ->modalDescription('Approving this gym will immediately activate its platform access according to its selected subscription tier.')
+                        ->visible(fn (Gym $record): bool => $record->subscription_status === 'pending_approval' || ! $record->is_active)
+                        ->action(function (Gym $record): void {
+                            $plan = $record->subscription_plan ?: 'trial';
+
+                            $record->is_active = true;
+                            $record->subscription_status = 'active';
+
+                            if ($plan === 'annual') {
+                                $record->subscription_ends_at = today()->addYear();
+                            } elseif ($plan === 'monthly') {
+                                $record->subscription_ends_at = today()->addDays(30);
+                            } else {
+                                $trialDays = (int) PlatformSetting::get('saas_trial_days', config('fitledger.saas.trial_days', 14));
+                                $record->trial_ends_at = today()->addDays($trialDays);
+                            }
+
+                            $record->save();
+
+                            // Ensure owner user is active
+                            User::where('email', $record->owner_email)->update(['is_active' => true]);
+
+                            Notification::make()
+                                ->success()
+                                ->title('Gym Approved & Activated')
+                                ->body("{$record->name} is now active on the platform.")
+                                ->send();
+                        }),
+
+                    Tables\Actions\Action::make('denyGym')
+                        ->label('Deny Gym')
+                        ->icon('heroicon-o-x-circle')
+                        ->color('danger')
+                        ->requiresConfirmation()
+                        ->modalHeading(fn (Gym $record) => "Deny Gym: {$record->name}")
+                        ->modalDescription('Are you sure you want to deny this gym registration? The owner will not have access to operational features.')
+                        ->visible(fn (Gym $record): bool => $record->subscription_status === 'pending_approval')
+                        ->action(function (Gym $record): void {
+                            $record->is_active = false;
+                            $record->subscription_status = 'rejected';
+                            $record->save();
+
+                            Notification::make()
+                                ->danger()
+                                ->title('Gym Registration Denied')
+                                ->body("{$record->name} has been rejected.")
+                                ->send();
+                        }),
+
                     Tables\Actions\EditAction::make(),
                     Tables\Actions\DeleteAction::make(),
                 ])
                 ->tooltip('Actions')
                 ->icon('heroicon-m-ellipsis-vertical'),
             ])
-            ->defaultSort('name');
+            ->defaultSort('created_at', 'desc');
     }
 
     public static function getPages(): array
