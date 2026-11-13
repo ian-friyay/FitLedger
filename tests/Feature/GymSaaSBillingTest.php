@@ -285,4 +285,24 @@ class GymSaaSBillingTest extends TestCase
         $this->assertSame($admin->id, $payment->approved_by);
         $this->assertSame('Reference number not found', $payment->admin_notes);
     }
+
+    public function test_active_gym_hides_offers_by_default_and_offers_toggle_on_demand(): void
+    {
+        $this->actingAs($this->owner);
+        \Filament\Facades\Filament::setTenant($this->gym);
+
+        \Livewire\Livewire::test(\App\Filament\Pages\GymBilling::class)
+            ->assertSet('showPlanOffers', false)
+            ->assertSee('Pay Again')
+            ->assertSee('Change Subscription Plan')
+            ->assertDontSee('Select Platform Subscription')
+            ->call('togglePlanOffers')
+            ->assertSet('showPlanOffers', true)
+            ->assertSee('+30 DAYS')
+            ->assertSee('+365 DAYS')
+            ->call('selectOffer', 'annual')
+            ->assertSet('selectedOffer', 'annual')
+            ->call('quickRenew')
+            ->assertSet('showPaymentModal', true);
+    }
 }

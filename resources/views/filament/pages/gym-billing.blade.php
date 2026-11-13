@@ -284,8 +284,8 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     @foreach ($plans as $key => $plan)
-                        <div class="p-6 sm:p-8 rounded-2xl flex flex-col justify-between"
-                            style="background-color: #12151b; border: {{ $key === 'annual' ? '2px solid #FF5722' : '1px solid rgba(255, 255, 255, 0.08)' }}; box-shadow: {{ $key === 'annual' ? '0 10px 30px -10px rgba(255, 87, 34, 0.3)' : '0 10px 25px -5px rgba(0, 0, 0, 0.4)' }};">
+                        <div class="p-6 sm:p-7 rounded-2xl flex flex-col justify-between"
+                            style="background-color: #12151b; border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);">
                             
                             <div>
                                 <div class="flex items-center justify-between mb-2">
@@ -297,26 +297,28 @@
                                         </span>
                                     @endif
                                 </div>
-                                <p class="text-xs text-zinc-400 mb-5 min-h-[32px]">{{ $plan['description'] }}</p>
-                                <div class="flex items-baseline gap-2">
-                                    <span class="font-athletic text-4xl sm:text-5xl font-black text-white">PHP {{ number_format($plan['price'], 2) }}</span>
-                                    <span class="text-xs text-zinc-400 font-medium">/ {{ $plan['days'] }} days</span>
+
+                                <div class="my-4 p-4 rounded-xl flex items-center justify-between"
+                                    style="background-color: #0e1117; border: 1px solid rgba(255, 255, 255, 0.05);">
+                                    <div>
+                                        <span class="text-[10px] font-bold uppercase tracking-widest text-[#FF7A00] block">Duration</span>
+                                        <span class="font-athletic text-4xl font-black text-white leading-none block mt-0.5">
+                                            +{{ $plan['days'] }} DAYS
+                                        </span>
+                                    </div>
+                                    <div class="text-right">
+                                        <span class="text-[10px] font-bold uppercase tracking-wider text-zinc-400 block">Access Window</span>
+                                        <span class="font-athletic text-lg font-black text-orange-400 block">
+                                            {{ $key === 'annual' ? '365 Days Access' : '30 Days Access' }}
+                                        </span>
+                                    </div>
                                 </div>
 
-                                <ul class="mt-6 space-y-2 text-xs text-zinc-300">
-                                    <li class="flex items-center gap-2">
-                                        <svg class="w-4 h-4 text-emerald-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
-                                        <span>Unlimited Members & Pass Subscriptions</span>
-                                    </li>
-                                    <li class="flex items-center gap-2">
-                                        <svg class="w-4 h-4 text-emerald-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
-                                        <span>Turnstile & QR Scanner Station</span>
-                                    </li>
-                                    <li class="flex items-center gap-2">
-                                        <svg class="w-4 h-4 text-emerald-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
-                                        <span>Classes & Group Session Management</span>
-                                    </li>
-                                </ul>
+                                <div class="flex items-baseline gap-2">
+                                    <span class="font-athletic text-3xl font-black text-white">PHP {{ number_format($plan['price'], 2) }}</span>
+                                    <span class="text-xs text-zinc-400 font-medium">/ {{ $plan['days'] }} days</span>
+                                </div>
+                                <p class="text-xs text-zinc-400 mt-2">Complete unrestricted access to all FitLedger features.</p>
                             </div>
 
                             <div class="mt-6 pt-4 border-t border-white/5">
@@ -446,6 +448,24 @@
                                 Submit your GCash payment below so the Platform Admin can verify and restore full access for this gym.
                             @endif
                         </p>
+
+                        <!-- Action Buttons: Quick Renew & Change Plan -->
+                        <div class="mt-6 flex flex-wrap items-center gap-3">
+                            <button type="button" wire:click="quickRenew"
+                                class="px-6 py-3 rounded-xl font-athletic text-sm font-black uppercase tracking-wider text-white shadow-lg transition-transform hover:scale-105 active:scale-95 flex items-center gap-2"
+                                style="background: linear-gradient(135deg, #FF6D00 0%, #FF3D00 100%);">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                                <span>{{ $isSubscribed ? 'Renew Subscription / Pay Again' : ($isOnTrial ? 'Renew Access / Pay Again' : 'Renew Access / Pay Dues') }}</span>
+                            </button>
+
+                            <button type="button" wire:click="togglePlanOffers"
+                                class="px-5 py-3 rounded-xl font-athletic text-sm font-bold uppercase tracking-wider text-zinc-300 hover:text-white transition-all flex items-center gap-2 bg-white/5 border border-white/10 hover:border-white/20">
+                                <svg class="w-4 h-4 text-[#FF7A00]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
+                                </svg>
+                                <span>{{ $showPlanOffers ? 'Hide Subscription Offers ▴' : 'Change Subscription Plan ▾' }}</span>
+                            </button>
+                        </div>
                     </div>
 
                     <div class="flex-shrink-0" style="display: flex; flex-direction: column; align-items: center; justify-content: center; background-color: #0a0c10; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 1.25rem; padding: 1.25rem 2rem; min-width: 160px; text-align: center;">
@@ -458,90 +478,138 @@
                 </div>
             </div>
 
-            <!-- Section Header -->
-            <div class="text-center max-w-2xl mx-auto space-y-1.5 pt-2">
-                <h3 class="font-athletic text-3xl font-black text-white uppercase tracking-wider">
-                    All-in-One Platform Pricing
-                </h3>
-                <p class="text-xs text-zinc-400">
-                    Pay one flat fee for this gym location. Every plan includes 100% of all FitLedger features with zero hidden add-ons or per-member surcharges.
-                </p>
-            </div>
+            <!-- Expandable Platform Pricing Offers Section (Hidden by default when active to prevent clutter) -->
+            @if ($showPlanOffers)
+                <!-- Section Header -->
+                <div class="text-center max-w-2xl mx-auto space-y-1.5 pt-2 animate-in fade-in duration-200">
+                    <span class="text-[10px] font-bold uppercase tracking-widest text-[#FF7A00] block">Subscription Options</span>
+                    <h3 class="font-athletic text-3xl font-black text-white uppercase tracking-wider">
+                        All-in-One Platform Pricing
+                    </h3>
+                    <p class="text-xs text-zinc-400">
+                        Select a duration to expand and proceed to payment. Both tiers include 100% unrestricted access to every FitLedger feature.
+                    </p>
+                </div>
 
-            <!-- Pricing Plans Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-                @foreach ($plans as $key => $plan)
-                    <div class="relative flex flex-col justify-between p-6 sm:p-8 transition-all hover:scale-[1.01]"
-                        style="background-color: #12151b;
-                               border: {{ $key === 'annual' ? '2px solid #FF5722' : '1px solid rgba(255, 255, 255, 0.08)' }};
-                               border-radius: 1.25rem;
-                               box-shadow: {{ $key === 'annual' ? '0 10px 30px -10px rgba(255, 87, 34, 0.35)' : '0 10px 25px -5px rgba(0, 0, 0, 0.4)' }};">
-                        
-                        <div>
-                            <div class="flex items-center justify-between gap-3 mb-2">
-                                <h4 class="font-athletic text-2xl font-bold text-white uppercase tracking-wider">{{ $plan['name'] }}</h4>
-                                @if (!empty($plan['badge']))
-                                    <span class="px-2.5 py-1 rounded-full text-[10px] font-black tracking-widest uppercase text-white shadow-md flex-shrink-0"
+                <!-- Interactive Selectable Pricing Cards (No permanent highlight on one card; expands on click) -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto animate-in fade-in duration-200">
+                    @foreach ($plans as $key => $plan)
+                        @php $isSelected = ($selectedOffer === $key); @endphp
+                        <div wire:click="selectOffer('{{ $key }}')"
+                            class="relative flex flex-col justify-between p-6 sm:p-7 rounded-2xl transition-all duration-200 cursor-pointer select-none"
+                            style="background-color: #12151b;
+                                   border: {{ $isSelected ? '2px solid #FF7A00' : '1px solid rgba(255, 255, 255, 0.08)' }};
+                                   box-shadow: {{ $isSelected ? '0 10px 30px -10px rgba(255, 122, 0, 0.35)' : '0 10px 25px -5px rgba(0, 0, 0, 0.4)' }};
+                                   transform: {{ $isSelected ? 'scale(1.01)' : 'scale(1)' }};">
+                            
+                            <div>
+                                <!-- Plan Title & Dynamic Selection Badge -->
+                                <div class="flex items-center justify-between gap-3 mb-2">
+                                    <h4 class="font-athletic text-2xl font-bold text-white uppercase tracking-wider">{{ $plan['name'] }}</h4>
+                                    @if ($isSelected)
+                                        <span class="px-2.5 py-1 rounded-full text-[10px] font-black tracking-widest uppercase text-white shadow-md flex items-center gap-1"
+                                            style="background: linear-gradient(135deg, #FF6D00 0%, #FF3D00 100%);">
+                                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+                                            Selected
+                                        </span>
+                                    @elseif (!empty($plan['badge']))
+                                        <span class="px-2.5 py-1 rounded-full text-[10px] font-black tracking-widest uppercase text-zinc-300 bg-white/5 border border-white/10">
+                                            {{ $plan['badge'] }}
+                                        </span>
+                                    @endif
+                                </div>
+
+                                <!-- HERO FOCUS ON DAYS (Deal breaker duration) -->
+                                <div class="my-4 p-4 rounded-xl flex items-center justify-between transition-colors"
+                                    style="background: {{ $isSelected ? 'linear-gradient(135deg, rgba(255, 122, 0, 0.12) 0%, rgba(255, 61, 0, 0.05) 100%)' : '#0e1117' }}; border: 1px solid {{ $isSelected ? 'rgba(255, 122, 0, 0.3)' : 'rgba(255, 255, 255, 0.05)' }};">
+                                    <div>
+                                        <span class="text-[10px] font-bold uppercase tracking-widest text-[#FF7A00] block">Duration</span>
+                                        <span class="font-athletic text-4xl sm:text-5xl font-black text-white tracking-tight leading-none block mt-0.5">
+                                            +{{ $plan['days'] }} DAYS
+                                        </span>
+                                    </div>
+                                    <div class="text-right">
+                                        <span class="text-[10px] font-bold uppercase tracking-wider text-zinc-400 block">Access Window</span>
+                                        <span class="font-athletic text-lg font-black text-orange-400 block">
+                                            {{ $key === 'annual' ? '365 Days Access' : '30 Days Access' }}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <!-- Price -->
+                                <div class="flex items-baseline gap-2">
+                                    <span class="font-athletic text-3xl sm:text-4xl font-black text-white">PHP {{ number_format($plan['price'], 2) }}</span>
+                                    <span class="text-xs text-zinc-400 font-medium">/ {{ $plan['days'] }} days</span>
+                                </div>
+
+                                <!-- Clean Label (No feature checklist clutter) -->
+                                <p class="text-xs text-zinc-400 mt-2 leading-relaxed">
+                                    Complete, unrestricted access to all FitLedger features for {{ $plan['days'] }} days.
+                                </p>
+                            </div>
+
+                            <!-- Expandable Payment Action -->
+                            <div class="mt-6 pt-5 border-t border-white/5">
+                                @if ($isSelected)
+                                    <button type="button" wire:click.stop="openPaymentModal('{{ $key }}')"
+                                        class="w-full py-3.5 px-6 rounded-xl font-athletic text-sm font-black uppercase tracking-wider text-white shadow-lg transition-transform hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2 animate-in fade-in duration-150"
                                         style="background: linear-gradient(135deg, #FF6D00 0%, #FF3D00 100%);">
-                                        {{ $plan['badge'] }}
-                                    </span>
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                                        </svg>
+                                        <span>Pay via GCash (PHP {{ number_format($plan['price'], 2) }})</span>
+                                    </button>
+                                @else
+                                    <div class="flex items-center justify-between text-xs text-zinc-400 hover:text-white transition-colors py-2">
+                                        <span class="font-medium">Click card to select this {{ $plan['days'] }}-day plan</span>
+                                        <span class="text-[#FF7A00] font-bold">&rarr;</span>
+                                    </div>
                                 @endif
                             </div>
-                            <p class="text-xs text-zinc-400 min-h-[32px]">{{ $plan['description'] }}</p>
-
-                            <div class="mt-5 flex items-baseline gap-2">
-                                <span class="font-athletic text-4xl sm:text-5xl font-black text-white">PHP {{ number_format($plan['price'], 2) }}</span>
-                                <span class="text-xs text-zinc-400 font-medium">/ {{ $plan['days'] }} days</span>
-                            </div>
-
-                            <!-- Feature Checklist -->
-                            <ul class="mt-6 space-y-2.5 text-xs text-zinc-300">
-                                <li class="flex items-center gap-2.5">
-                                    <svg class="w-4 h-4 text-emerald-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
-                                    </svg>
-                                    <span><strong>Unlimited Members & Pass Subscriptions</strong></span>
-                                </li>
-                                <li class="flex items-center gap-2.5">
-                                    <svg class="w-4 h-4 text-emerald-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
-                                    </svg>
-                                    <span><strong>Turnstile & Front-Desk QR Scanner Engine</strong></span>
-                                </li>
-                                <li class="flex items-center gap-2.5">
-                                    <svg class="w-4 h-4 text-emerald-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
-                                    </svg>
-                                    <span><strong>Gym Classes & Group Booking Management</strong></span>
-                                </li>
-                                <li class="flex items-center gap-2.5">
-                                    <svg class="w-4 h-4 text-emerald-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
-                                    </svg>
-                                    <span><strong>Member Digital Pass & Self-Service Portal</strong></span>
-                                </li>
-                                <li class="flex items-center gap-2.5">
-                                    <svg class="w-4 h-4 text-emerald-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
-                                    </svg>
-                                    <span><strong>Attendance Logs & Revenue Analytics Export</strong></span>
-                                </li>
-                            </ul>
                         </div>
+                    @endforeach
+                </div>
 
-                        <div class="mt-8 pt-6 border-t border-white/5">
-                            <button type="button" wire:click="openPaymentModal('{{ $key }}')"
-                                class="w-full py-3.5 px-6 rounded-xl font-athletic text-sm font-black uppercase tracking-wider text-white shadow-lg transition-transform hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2"
-                                style="background: {{ $key === 'annual' ? 'linear-gradient(135deg, #FF6D00 0%, #FF3D00 100%)' : '#27272a' }};">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/>
-                                </svg>
-                                Pay via GCash (PHP {{ number_format($plan['price'], 2) }})
-                            </button>
+                <!-- Single Shared Features Accordion (Zero redundant clutter) -->
+                <div x-data="{ showFeatures: false }" class="max-w-4xl mx-auto pt-1 animate-in fade-in duration-200">
+                    <div class="text-center">
+                        <button type="button" @click="showFeatures = !showFeatures"
+                            class="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-zinc-400 hover:text-white transition-colors py-2 px-4 rounded-xl bg-white/[0.03] border border-white/5 hover:border-white/10">
+                            <svg class="w-4 h-4 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            <span x-text="showFeatures ? 'Hide All-Inclusive Feature Details ▴' : 'View What\'s Included in All Plans ▾'"></span>
+                        </button>
+                    </div>
+
+                    <div x-show="showFeatures" x-collapse x-cloak class="mt-4 p-5 rounded-2xl bg-white/[0.02] border border-white/5">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3.5 text-xs text-zinc-300">
+                            <div class="flex items-center gap-2.5">
+                                <svg class="w-4 h-4 text-emerald-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                                <span>Unlimited Members & Passes</span>
+                            </div>
+                            <div class="flex items-center gap-2.5">
+                                <svg class="w-4 h-4 text-emerald-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                                <span>Turnstile & QR Scanner Station</span>
+                            </div>
+                            <div class="flex items-center gap-2.5">
+                                <svg class="w-4 h-4 text-emerald-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                                <span>Gym Classes & Group Session Bookings</span>
+                            </div>
+                            <div class="flex items-center gap-2.5">
+                                <svg class="w-4 h-4 text-emerald-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                                <span>Member Digital Pass & Self-Service Portal</span>
+                            </div>
+                            <div class="flex items-center gap-2.5">
+                                <svg class="w-4 h-4 text-emerald-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                                <span>Attendance Logs & Financial Analytics</span>
+                            </div>
+                            <div class="flex items-center gap-2.5">
+                                <svg class="w-4 h-4 text-emerald-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                                <span>Zero Per-Member Surcharges</span>
+                            </div>
                         </div>
                     </div>
-                @endforeach
-            </div>
+                </div>
+            @endif
 
             <!-- Payment Submission Modal -->
             @if ($showPaymentModal)
@@ -568,9 +636,10 @@
                                     <h4 class="font-athletic text-2xl font-black text-white uppercase tracking-wider">
                                         Submit GCash Payment
                                     </h4>
-                                    <p class="text-xs text-zinc-400">
+                                    <p class="text-xs text-zinc-400 mt-0.5">
                                         Plan: <strong class="text-white">{{ $plans[$selectedPlan]['name'] ?? 'Subscription' }}</strong> &bull;
-                                        Amount: <strong class="text-emerald-400">PHP {{ number_format($plans[$selectedPlan]['price'] ?? 0, 2) }}</strong>
+                                        Amount: <strong class="text-emerald-400">PHP {{ number_format($plans[$selectedPlan]['price'] ?? 0, 2) }}</strong> &bull;
+                                        <span class="text-[#FF7A00] font-bold">+{{ $plans[$selectedPlan]['days'] ?? 30 }} Days to {{ $gym?->name }}</span>
                                     </p>
                                 </div>
                             </div>

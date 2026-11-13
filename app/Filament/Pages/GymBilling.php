@@ -31,6 +31,10 @@ class GymBilling extends Page
     public $proofImage = null;
     public bool $showPaymentModal = false;
 
+    // Gym Owner Plan Offers State (Clean toggling & selectable cards)
+    public bool $showPlanOffers = false;
+    public string $selectedOffer = 'monthly';
+
     // Platform Admin Pricing Form State
     public ?float $monthlyPrice = null;
     public ?float $annualPrice = null;
@@ -50,6 +54,13 @@ class GymBilling extends Page
         $this->adminGcashNumber = $gcash['number'];
         $this->adminGcashName = $gcash['name'];
         $this->adminPaymentInstructions = $gcash['instructions'];
+
+        /** @var Gym|null $gym */
+        $gym = Filament::getTenant();
+
+        // If the gym already has an active access or subscription, hide offers by default to avoid clutter
+        $this->showPlanOffers = ! ($gym instanceof Gym && $gym->hasActiveAccess());
+        $this->selectedOffer = ($gym instanceof Gym && $gym->subscription_plan === 'annual') ? 'annual' : 'monthly';
     }
 
     public static function getNavigationGroup(): ?string
@@ -148,6 +159,28 @@ class GymBilling extends Page
             ->body('SaaS subscription pricing and payment details have been saved across the platform.')
             ->success()
             ->send();
+    }
+
+    public function togglePlanOffers(): void
+    {
+        $this->showPlanOffers = ! $this->showPlanOffers;
+    }
+
+    public function selectOffer(string $planKey): void
+    {
+        $this->selectedOffer = $planKey;
+    }
+
+    public function quickRenew(): void
+    {
+        /** @var Gym|null $gym */
+        $gym = Filament::getTenant();
+
+        $plan = ($gym instanceof Gym && in_array($gym->subscription_plan, ['monthly', 'annual']))
+            ? $gym->subscription_plan
+            : $this->selectedOffer;
+
+        $this->openPaymentModal($plan);
     }
 
     public function openPaymentModal(string $planKey): void
@@ -275,6 +308,8 @@ class GymBilling extends Page
             'expiryDate' => $gym?->accessExpiryDate(),
             'statusLabel' => $gym?->accessStatusLabel() ?? 'Unknown',
             'adminStats' => $adminStats,
+            'showPlanOffers' => $this->showPlanOffers,
+            'selectedOffer' => $this->selectedOffer,
         ];
     }
 }
