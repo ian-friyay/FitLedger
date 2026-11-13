@@ -15,6 +15,11 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class StatsOverview extends BaseWidget
 {
+    public static function canView(): bool
+    {
+        return false;
+    }
+
     protected static ?int $sort = 2;
 
     protected static ?string $pollingInterval = '60s';

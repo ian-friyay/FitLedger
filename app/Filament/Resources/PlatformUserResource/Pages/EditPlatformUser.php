@@ -17,4 +17,9 @@ class EditPlatformUser extends EditRecord
                 ->visible(fn ($record) => $record->getKey() !== auth()->id()),
         ];
     }
+
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
 }

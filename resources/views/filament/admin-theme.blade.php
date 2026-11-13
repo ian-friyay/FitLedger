@@ -295,4 +295,45 @@
             display: none;
         }
     }
+
+    /* FitLedger Dashboard Grid Architecture */
+    .fitledger-dashboard-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+        width: 100%;
+        align-items: start;
+    }
+
+    @media (min-width: 1024px) {
+        .fitledger-dashboard-grid {
+            grid-template-columns: minmax(0, 63%) minmax(0, 37%);
+        }
+    }
+
+    .fitledger-subcards-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1.25rem;
+        width: 100%;
+    }
+
+    @media (min-width: 640px) {
+        .fitledger-subcards-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    .fitledger-top-plans-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        width: 100%;
+    }
+
+    @media (min-width: 640px) {
+        .fitledger-top-plans-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
 </style>

@@ -17,4 +17,9 @@ class EditUser extends EditRecord
                 ->visible(fn (): bool => $this->getRecord()->getKey() !== auth()->id()),
         ];
     }
+
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
 }
