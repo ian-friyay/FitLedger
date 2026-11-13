@@ -109,14 +109,21 @@ class Gym extends Model implements HasName
         return $this->hasMany(Payment::class);
     }
 
+    public function classBookings(): HasMany
+    {
+        return $this->hasMany(ClassBooking::class);
+    }
+
+    public function gymClasses(): HasMany
+    {
+        return $this->hasMany(GymClass::class);
+    }
+
     public function scopeActive($query)
     {
         return $query->where('is_active', true);
     }
 
-    /**
-     * Retrieve the operating schedule for the gym.
-     */
     public function getOperatingSchedule(): array
     {
         return $this->settings['schedule'] ?? [
@@ -138,9 +145,6 @@ class Gym extends Model implements HasName
         return \Illuminate\Support\Facades\Storage::disk('public')->url($this->logo_path);
     }
 
-    /**
-     * Check if the gym is currently open based on operating schedule.
-     */
     public function isOpenNow(): bool
     {
         $schedule = $this->getOperatingSchedule();
