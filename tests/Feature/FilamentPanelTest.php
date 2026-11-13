@@ -96,6 +96,8 @@ class FilamentPanelTest extends TestCase
         $this->get('/admin/login')
             ->assertSuccessful()
             ->assertSee('FitLedger')
+            ->assertSee('images/fitledger-logo.jpg')
+            ->assertSee('shadow-orange-500/20')
             ->assertSee('Log in to your Account')
             ->assertDontSee('Scanner Station');
     }
@@ -105,6 +107,8 @@ class FilamentPanelTest extends TestCase
         $this->get('/admin/register')
             ->assertSuccessful()
             ->assertSee('FitLedger')
+            ->assertSee('images/fitledger-logo.jpg')
+            ->assertSee('shadow-orange-500/20')
             ->assertSee('Create an Account')
             ->assertDontSee('Scanner Station');
     }

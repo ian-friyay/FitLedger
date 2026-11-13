@@ -1,9 +1,12 @@
-<div class="flex items-center gap-2.5 py-1">
-    <img src="{{ asset('images/fitledger-logo.jpg') }}" alt="FitLedger Logo" class="h-8 w-auto object-contain rounded-md shadow-sm">
-    <div class="leading-tight">
-        <span class="text-xl font-black uppercase tracking-tight text-white block" 
-              style="font-family: 'Barlow Condensed', sans-serif; letter-spacing: 0.02em;">
+<div class="flex items-center gap-2.5 py-0.5">
+    <img src="{{ asset('images/fitledger-logo.jpg') }}" alt="FitLedger Logo" 
+         class="h-8 w-auto rounded-xl object-contain bg-white/5 border border-white/10 shadow-md shadow-orange-500/20 flex-shrink-0">
+    <div class="leading-none">
+        <span class="font-athletic text-xl font-black uppercase tracking-wider text-white block leading-none">
             FIT<span class="text-[#FF7A00]">LEDGER</span>
+        </span>
+        <span class="text-[9px] uppercase font-bold tracking-widest text-[#FF7A00] block mt-0.5">
+            Gym Management OS
         </span>
     </div>
 </div>

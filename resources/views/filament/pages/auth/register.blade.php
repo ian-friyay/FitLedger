@@ -3,13 +3,15 @@
     <!-- Brand Header -->
     <div>
         <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl flex items-center justify-center font-athletic font-black text-xl text-white shadow-lg"
-                style="background: linear-gradient(135deg, #FF6D00 0%, #FF3D00 100%);">
-                FL
-            </div>
+            <img src="{{ asset('images/fitledger-logo.jpg') }}" alt="FitLedger Logo"
+                class="h-10 w-auto rounded-xl object-contain bg-white/5 border border-white/10 shadow-md shadow-orange-500/20 flex-shrink-0">
             <div>
-                <span class="font-athletic text-2xl font-black tracking-wider text-white uppercase block leading-none">FitLedger</span>
-                <span class="text-[10px] uppercase font-bold tracking-widest text-orange-500 block">Gym Management OS</span>
+                <span class="font-athletic text-2xl font-black tracking-wider text-white uppercase block leading-none">
+                    FIT<span class="text-[#FF7A00]">LEDGER</span>
+                </span>
+                <span class="text-[10px] uppercase font-bold tracking-widest text-[#FF7A00] block mt-0.5">
+                    Gym Management OS
+                </span>
             </div>
         </div>
 

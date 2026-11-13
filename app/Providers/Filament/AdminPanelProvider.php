@@ -35,7 +35,7 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->brandName('FitLedger')
             ->brandLogo(fn () => view('filament.brand-logo'))
-            ->brandLogoHeight('2.25rem')
+            ->brandLogoHeight('2.5rem')
             ->font('Plus Jakarta Sans')
             ->darkMode(true)
             ->login(\App\Filament\Pages\Auth\Login::class)

@@ -18,6 +18,13 @@
         text-transform: uppercase !important;
     }
 
+    .fi-logo {
+        height: auto !important;
+        max-height: 2.75rem !important;
+        display: flex !important;
+        align-items: center !important;
+    }
+
     /* Dark Mode Deep Charcoal / OLED Styling */
     html.dark body,
     html.dark .fi-body {

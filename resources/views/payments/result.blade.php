@@ -54,6 +54,18 @@
 </head>
 <body>
     <main class="card">
+        <div style="display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 24px;">
+            <img src="{{ asset('images/fitledger-logo.jpg') }}" alt="FitLedger Logo" 
+                 style="height: 38px; width: auto; border-radius: 12px; object-fit: contain; background: #0a0c10; border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 4px 15px rgba(255, 122, 0, 0.25);">
+            <div style="text-align: left; line-height: 1;">
+                <span style="font-family: -apple-system, BlinkMacSystemFont, sans-serif; font-size: 20px; font-weight: 900; letter-spacing: 0.05em; text-transform: uppercase; color: #0a0c10; display: block;">
+                    FIT<span style="color: #FF7A00;">LEDGER</span>
+                </span>
+                <span style="font-size: 9px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #FF7A00; display: block; margin-top: 3px;">
+                    Payment Confirmation
+                </span>
+            </div>
+        </div>
         @if ($status === 'success')
             <div class="icon success">&#10003;</div>
             <h1>Payment received</h1>

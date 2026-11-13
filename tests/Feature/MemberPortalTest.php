@@ -32,7 +32,9 @@ class MemberPortalTest extends TestCase
 
         $response->assertOk()
             ->assertSee('Find Your Member Pass')
-            ->assertSee('Enter Phone Number, QR Code, or Email');
+            ->assertSee('Enter Phone Number, QR Code, or Email')
+            ->assertSee('images/fitledger-logo.jpg')
+            ->assertSee('shadow-orange-500/20');
     }
 
     public function test_lookup_redirects_to_pass_page_by_phone(): void
@@ -97,6 +99,8 @@ class MemberPortalTest extends TestCase
             ->assertSee($this->gym->name)
             ->assertSee('Standard Monthly')
             ->assertSee($member->qr_code)
+            ->assertSee('images/fitledger-logo.jpg')
+            ->assertSee('shadow-orange-500/20')
             ->assertSee('<svg', false); // SVG QR Code
     }
 

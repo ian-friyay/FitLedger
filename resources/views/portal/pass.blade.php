@@ -45,15 +45,19 @@
                 <div class="flex items-center justify-between pb-4 border-b border-white/10 relative z-10">
                     <div class="flex items-center gap-3">
                         @if ($gym?->getLogoUrl())
-                            <img src="{{ $gym->getLogoUrl() }}" alt="{{ $gym->name }}" class="w-10 h-10 rounded-xl object-cover bg-white/5 border border-white/10 shadow flex-shrink-0">
+                            <img src="{{ $gym->getLogoUrl() }}" alt="{{ $gym->name }}"
+                                class="w-10 h-10 rounded-xl object-cover bg-white/5 border border-white/10 shadow-md shadow-orange-500/20 flex-shrink-0">
                         @else
-                            <div class="w-10 h-10 rounded-xl bg-orange-600/20 border border-orange-500/30 flex items-center justify-center text-orange-400 font-athletic text-xl font-black">
-                                FL
-                            </div>
+                            <img src="{{ asset('images/fitledger-logo.jpg') }}" alt="{{ $gym?->name ?? 'FitLedger' }}"
+                                class="h-10 w-auto rounded-xl object-contain bg-white/5 border border-white/10 shadow-md shadow-orange-500/20 flex-shrink-0">
                         @endif
                         <div>
                             <span class="font-athletic text-lg font-black uppercase tracking-wider text-white block leading-none">
-                                {{ $gym?->name ?? 'FitLedger' }}
+                                @if ($gym)
+                                    {{ $gym->name }}
+                                @else
+                                    FIT<span class="text-[#FF7A00]">LEDGER</span>
+                                @endif
                             </span>
                             <span class="text-[9px] font-bold uppercase tracking-widest text-[#FF7A00] block mt-0.5">
                                 Official Digital Pass

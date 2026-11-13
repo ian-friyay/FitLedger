@@ -44,10 +44,15 @@
     <header class="sticky top-0 z-40 bg-[#0a0c10]/90 backdrop-blur-md border-b border-white/5">
         <div class="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
             <a href="{{ route('portal.lookup') }}" class="flex items-center gap-3 group">
-                <img src="{{ asset('images/fitledger-logo.jpg') }}" alt="FitLedger" class="h-9 w-auto object-contain rounded-xl shadow-md shadow-orange-500/20 group-hover:scale-105 transition transform">
+                <img src="{{ asset('images/fitledger-logo.jpg') }}" alt="FitLedger"
+                    class="h-9 w-auto rounded-xl object-contain bg-white/5 border border-white/10 shadow-md shadow-orange-500/20 group-hover:scale-105 transition transform flex-shrink-0">
                 <div>
-                    <span class="font-athletic text-2xl font-black uppercase tracking-tight text-white block leading-none">FITLEDGER</span>
-                    <span class="text-[10px] font-bold uppercase tracking-wider text-[#FF7A00] block">Member Portal</span>
+                    <span class="font-athletic text-2xl font-black uppercase tracking-wider text-white block leading-none">
+                        FIT<span class="text-[#FF7A00]">LEDGER</span>
+                    </span>
+                    <span class="text-[10px] uppercase font-bold tracking-widest text-[#FF7A00] block mt-0.5">
+                        Member Portal
+                    </span>
                 </div>
             </a>
 
