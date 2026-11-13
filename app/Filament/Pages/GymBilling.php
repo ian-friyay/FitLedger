@@ -36,6 +36,7 @@ class GymBilling extends Page
     public string $selectedOffer = 'monthly';
 
     // Platform Admin Pricing Form State
+    public string $adminActiveTab = 'rates';
     public ?float $monthlyPrice = null;
     public ?float $annualPrice = null;
     public ?int $trialDays = null;
@@ -199,6 +200,11 @@ class GymBilling extends Page
         $this->proofImage = null;
     }
 
+    public function submitPayment(): void
+    {
+        $this->submitManualPayment();
+    }
+
     public function submitManualPayment(): void
     {
         $this->validate([
@@ -299,6 +305,7 @@ class GymBilling extends Page
             'plans' => $plans,
             'gcash' => $gcash,
             'payments' => $payments,
+            'paymentHistory' => $payments,
             'latestPending' => $latestPending,
             'hasActiveAccess' => $gym?->hasActiveAccess() ?? false,
             'isOnTrial' => $gym?->isOnTrial() ?? false,
