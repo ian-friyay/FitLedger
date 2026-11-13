@@ -40,7 +40,7 @@ class AdminPanelProvider extends PanelProvider
             ->darkMode(true)
             ->login(\App\Filament\Pages\Auth\Login::class)
             ->registration(\App\Filament\Pages\Auth\Register::class)
-            ->profile()
+            ->profile(\App\Filament\Pages\Auth\EditProfile::class)
             ->passwordReset()
             ->colors([
                 'primary' => Color::Orange,
@@ -63,7 +63,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
-                Widgets\AccountWidget::class,
+                \App\Filament\Widgets\AccountWidget::class,
                 StatsOverview::class,
                 LatestCheckIns::class,
             ])

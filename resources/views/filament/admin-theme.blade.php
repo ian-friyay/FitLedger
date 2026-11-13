@@ -48,6 +48,61 @@
         border-bottom-color: rgba(255, 255, 255, 0.05) !important;
     }
 
+    /* Sidebar Tenant Switcher Trigger - Intuitive Card & Switcher Indication */
+    html.dark .fi-tenant-menu-trigger {
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%) !important;
+        border: 1px solid rgba(255, 255, 255, 0.12) !important;
+        border-radius: 0.875rem !important;
+        padding: 0.65rem 0.85rem !important;
+        margin: 0.35rem 0.5rem 0.75rem 0.5rem !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        cursor: pointer !important;
+    }
+
+    html.dark .fi-tenant-menu-trigger:hover {
+        background: linear-gradient(180deg, rgba(255, 122, 0, 0.12) 0%, rgba(255, 122, 0, 0.04) 100%) !important;
+        border-color: rgba(255, 122, 0, 0.45) !important;
+        box-shadow: 0 6px 18px -2px rgba(255, 122, 0, 0.25) !important;
+        transform: translateY(-1px) !important;
+    }
+
+    /* Style the Tenant Label badge */
+    html.dark .fi-tenant-menu-trigger span.text-xs {
+        color: #FF7A00 !important;
+        font-weight: 800 !important;
+        font-family: 'JetBrains Mono', monospace !important;
+        letter-spacing: 0.06em !important;
+        text-transform: uppercase !important;
+        font-size: 0.68rem !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 0.25rem !important;
+    }
+
+    html.dark .fi-tenant-menu-trigger span.text-gray-950,
+    html.dark .fi-tenant-menu-trigger span.dark\:text-white {
+        font-family: 'Barlow Condensed', sans-serif !important;
+        font-weight: 800 !important;
+        font-size: 1.05rem !important;
+        letter-spacing: 0.02em !important;
+        text-transform: uppercase !important;
+        color: #ffffff !important;
+        line-height: 1.2 !important;
+    }
+
+    /* Chevron icon inside tenant trigger */
+    html.dark .fi-tenant-menu-trigger svg {
+        color: #FF7A00 !important;
+        opacity: 0.8 !important;
+        transition: transform 0.2s ease, opacity 0.2s ease !important;
+    }
+
+    html.dark .fi-tenant-menu-trigger:hover svg {
+        opacity: 1 !important;
+        transform: translateY(1px) !important;
+    }
+
     /* Sidebar Items */
     html.dark .fi-sidebar-item-active .fi-sidebar-item-button {
         background: linear-gradient(90deg, rgba(255, 87, 34, 0.18) 0%, rgba(255, 87, 34, 0.05) 100%) !important;

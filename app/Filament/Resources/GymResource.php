@@ -53,6 +53,14 @@ class GymResource extends Resource
             ->schema([
                 Forms\Components\Section::make('Gym')
                     ->schema([
+                        Forms\Components\FileUpload::make('logo_path')
+                            ->label('Gym Brand Logo')
+                            ->image()
+                            ->imageEditor()
+                            ->directory('gym-logos')
+                            ->visibility('public')
+                            ->maxSize(2048)
+                            ->columnSpanFull(),
                         Forms\Components\TextInput::make('name')
                             ->required()
                             ->maxLength(255),
@@ -139,6 +147,10 @@ class GymResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\ImageColumn::make('logo_path')
+                    ->label('Logo')
+                    ->circular()
+                    ->defaultImageUrl(fn ($record) => 'https://ui-avatars.com/api/?name='.urlencode($record->name).'&background=12151b&color=FF7A00'),
                 Tables\Columns\TextColumn::make('name')
                     ->searchable()
                     ->sortable()

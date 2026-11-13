@@ -3,13 +3,15 @@
 namespace App\Models;
 
 use Database\Factories\GymFactory;
+use Filament\Models\Contracts\HasAvatar;
+use Filament\Models\Contracts\HasCurrentTenantLabel;
 use Filament\Models\Contracts\HasName;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
 
-class Gym extends Model implements HasName
+class Gym extends Model implements HasName, HasCurrentTenantLabel, HasAvatar
 {
     /** @use HasFactory<GymFactory> */
     use HasFactory;
@@ -77,6 +79,16 @@ class Gym extends Model implements HasName
     public function getFilamentName(): string
     {
         return $this->name;
+    }
+
+    public function getCurrentTenantLabel(): string
+    {
+        return 'Location • Switch ▾';
+    }
+
+    public function getFilamentAvatarUrl(): ?string
+    {
+        return $this->getLogoUrl();
     }
 
     public function users(): HasMany

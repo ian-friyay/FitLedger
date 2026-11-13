@@ -43,7 +43,7 @@
     <!-- Top Status / Brand Bar -->
     <header class="sticky top-0 z-40 bg-[#0a0c10]/90 backdrop-blur-md border-b border-white/5">
         <div class="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-            <a href="{{ route('portal.lookup') }}" class="flex items-center gap-3 group">
+            <a href="{{ route('portal.lookup') }}" class="flex items-center gap-4 group">
                 <img src="{{ asset('images/fitledger-logo.jpg') }}" alt="FitLedger"
                     class="h-9 w-auto rounded-xl object-contain bg-white/5 border border-white/10 shadow-md shadow-orange-500/20 group-hover:scale-105 transition transform flex-shrink-0">
                 <div>

@@ -10,6 +10,8 @@ use Filament\Widgets\TableWidget as BaseWidget;
 
 class LatestCheckIns extends BaseWidget
 {
+    protected static ?int $sort = 3;
+
     protected static ?string $heading = 'Recent check-ins';
 
     protected int|string|array $columnSpan = 'full';
