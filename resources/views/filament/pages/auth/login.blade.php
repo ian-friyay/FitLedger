@@ -23,37 +23,18 @@
         </div>
     </div>
 
-    <!-- Quick Demo Role Switcher (Clean, Uncrowded Pills) -->
-    <div class="p-2.5 rounded-2xl bg-white/[0.03] border border-white/5 space-y-2">
-        <div class="flex items-center justify-between">
-            <span class="text-[10px] font-bold uppercase tracking-wider text-orange-400 flex items-center gap-1.5">
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                1-Click Demo Login:
-            </span>
-            <a href="{{ url('/portal') }}" class="text-[10px] text-zinc-400 hover:text-white transition-colors flex items-center gap-1">
-                Member Pass Portal &rarr;
-            </a>
-        </div>
-
-        <div class="grid grid-cols-2 gap-2">
-            <button
-                type="button"
-                onclick="fillLoginCredentials('admin@fitledger.test', 'password')"
-                class="flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs font-bold text-white bg-white/5 hover:bg-orange-500/20 border border-white/10 hover:border-orange-500/40 transition-all text-center"
-            >
-                <span>👑</span>
-                <span>Platform Admin</span>
-            </button>
-
-            <button
-                type="button"
-                onclick="fillLoginCredentials('owner@fitledger.test', 'password')"
-                class="flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs font-bold text-white bg-white/5 hover:bg-orange-500/20 border border-white/10 hover:border-orange-500/40 transition-all text-center"
-            >
-                <span>🥊</span>
-                <span>Gym Owner</span>
-            </button>
-        </div>
+    <!-- Quick Demo Role Dropdown (Clean & Uncrowded) -->
+    <div class="flex items-center justify-between p-2.5 rounded-xl bg-white/[0.03] border border-white/5">
+        <span class="text-xs text-zinc-400 font-medium flex items-center gap-1.5">
+            <svg class="w-3.5 h-3.5 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+            Quick Demo Role:
+        </span>
+        <select onchange="if(this.value){ const [e, p] = this.value.split('|'); fillLoginCredentials(e, p); this.selectedIndex = 0; }"
+            class="bg-[#0a0c10] border border-white/10 text-zinc-300 text-xs rounded-lg px-2.5 py-1.5 focus:border-orange-500 focus:ring-0 cursor-pointer">
+            <option value="">Select demo account...</option>
+            <option value="admin@fitledger.test|password">👑 Platform Admin</option>
+            <option value="owner@fitledger.test|password">🥊 Gym Owner</option>
+        </select>
     </div>
 
     <!-- Divider -->
@@ -62,11 +43,11 @@
             <div class="w-full border-t border-white/10"></div>
         </div>
         <div class="relative flex justify-center text-[11px]">
-            <span class="px-3 text-zinc-500 font-medium" style="background-color: #12151b;">or sign in with credentials</span>
+            <span class="px-3 text-zinc-500 font-medium" style="background-color: #12151b;">or continue with email</span>
         </div>
     </div>
 
-    <!-- Livewire Auth Form -->
+    <!-- Credentials Livewire Form -->
     <x-filament-panels::form id="form" wire:submit="authenticate">
         {{ $this->form }}
 
@@ -76,7 +57,7 @@
         />
     </x-filament-panels::form>
 
-    <!-- Footer Links -->
+    <!-- Footer Navigation Link -->
     <div class="pt-2 text-center text-xs text-zinc-400">
         @if (filament()->hasRegistration())
             <span>Don't have an account?</span>

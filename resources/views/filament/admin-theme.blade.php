@@ -149,4 +149,77 @@
         letter-spacing: 0.04em !important;
         border-radius: 0.5rem !important;
     }
+
+    /* Split-Screen Auth Page Layout */
+    .auth-split-wrapper {
+        min-height: 100vh;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1.5rem;
+        background-color: #0a0c10;
+        box-sizing: border-box;
+    }
+
+    .auth-split-card {
+        max-width: 1040px;
+        width: 100%;
+        min-height: 600px;
+        display: flex;
+        flex-direction: row;
+        border-radius: 1.5rem;
+        overflow: hidden;
+        background-color: #12151b;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.85);
+    }
+
+    .auth-form-column {
+        flex: 1 1 50%;
+        max-width: 50%;
+        padding: 3rem 2.75rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        background-color: #12151b;
+        box-sizing: border-box;
+        z-index: 2;
+    }
+
+    .auth-image-column {
+        flex: 1 1 50%;
+        max-width: 50%;
+        position: relative;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        min-height: 100%;
+        display: block;
+    }
+
+    .auth-image-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(10, 12, 16, 0.25) 0%, rgba(10, 12, 16, 0.70) 100%);
+        pointer-events: none;
+    }
+
+    @media (max-width: 860px) {
+        .auth-split-card {
+            flex-direction: column;
+            max-width: 480px;
+            min-height: auto;
+        }
+
+        .auth-form-column {
+            flex: 1 1 100%;
+            max-width: 100%;
+            padding: 2.25rem 1.75rem;
+        }
+
+        .auth-image-column {
+            display: none;
+        }
+    }
 </style>

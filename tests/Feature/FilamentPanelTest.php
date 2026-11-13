@@ -97,7 +97,7 @@ class FilamentPanelTest extends TestCase
             ->assertSuccessful()
             ->assertSee('FitLedger')
             ->assertSee('Log in to your Account')
-            ->assertSee('Connect with every gym operation.');
+            ->assertDontSee('Scanner Station');
     }
 
     public function test_guest_can_view_split_registration_page(): void
@@ -106,6 +106,6 @@ class FilamentPanelTest extends TestCase
             ->assertSuccessful()
             ->assertSee('FitLedger')
             ->assertSee('Create an Account')
-            ->assertSee('Connect with every gym operation.');
+            ->assertDontSee('Scanner Station');
     }
 }
