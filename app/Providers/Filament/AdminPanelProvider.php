@@ -50,6 +50,10 @@ class AdminPanelProvider extends PanelProvider
                 PanelsRenderHook::HEAD_END,
                 fn () => view('filament.admin-theme')
             )
+            ->renderHook(
+                PanelsRenderHook::AUTH_LOGIN_FORM_BEFORE,
+                fn () => view('filament.quick-login')
+            )
             ->tenant(Gym::class, slugAttribute: 'slug')
             ->tenantRegistration(RegisterGym::class)
             ->tenantProfile(EditGymProfile::class)
@@ -69,6 +73,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->navigationGroups([
                 'Members',
+                'Classes',
                 'Billing',
                 'Front desk',
                 'Settings',

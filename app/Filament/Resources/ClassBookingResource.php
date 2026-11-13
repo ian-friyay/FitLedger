@@ -4,31 +4,49 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ClassBookingResource\Pages;
 use App\Models\ClassBooking;
+use Filament\Facades\Filament;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class ClassBookingResource extends Resource
 {
     protected static ?string $model = ClassBooking::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-calendar-days';
 
-    protected static ?string $tenantOwnershipRelationshipName = 'gymClass';
+    protected static ?string $navigationGroup = 'Classes';
+
+    protected static ?int $navigationSort = 2;
+
+    protected static ?string $tenantOwnershipRelationshipName = 'gym';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Forms\Components\Select::make('gym_class_id')
-                    ->relationship('gymClass', 'name')
+                    ->relationship(
+                        'gymClass',
+                        'name',
+                        modifyQueryUsing: fn (Builder $query) => $query->where('gym_id', Filament::getTenant()?->getKey())
+                    )
                     ->label('Class')
+                    ->searchable()
+                    ->preload()
                     ->required(),
                 Forms\Components\Select::make('member_id')
-                    ->relationship('member', 'name') // TAMA NA ITO
+                    ->relationship(
+                        'member',
+                        'name',
+                        modifyQueryUsing: fn (Builder $query) => $query->where('gym_id', Filament::getTenant()?->getKey())
+                    )
                     ->label('Member')
+                    ->searchable()
+                    ->preload()
                     ->required(),
                 Forms\Components\Select::make('status')
                     ->options([

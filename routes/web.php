@@ -10,6 +10,9 @@ Route::get('/', function () {
 Route::get('/portal', [MemberPortalController::class, 'index'])
     ->name('portal.lookup');
 
+Route::get('/status', [MemberPortalController::class, 'index'])
+    ->name('portal.status');
+
 Route::post('/portal/lookup', [MemberPortalController::class, 'lookup'])
     ->name('portal.find');
 

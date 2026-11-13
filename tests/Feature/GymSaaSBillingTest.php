@@ -219,4 +219,70 @@ class GymSaaSBillingTest extends TestCase
         $this->assertNotNull($this->gym->subscription_ends_at);
         $this->assertSame('monthly', $this->gym->subscription_plan);
     }
+
+    public function test_platform_admin_can_manually_approve_payment_and_activate_gym(): void
+    {
+        $this->gym->update([
+            'trial_ends_at' => today()->subDays(10),
+            'subscription_ends_at' => null,
+            'is_active' => false,
+        ]);
+
+        $admin = User::factory()->create([
+            'is_platform_admin' => true,
+            'is_active' => true,
+        ]);
+
+        $payment = GymPayment::create([
+            'gym_id' => $this->gym->id,
+            'user_id' => $this->owner->id,
+            'plan' => 'monthly',
+            'provider' => 'manual',
+            'amount' => 1499.00,
+            'reference_number' => 'GCASH-MANUAL-TEST-001',
+            'status' => PaymentState::Pending,
+        ]);
+
+        $this->assertSame(PaymentState::Pending, $payment->status);
+        $this->assertFalse($this->gym->hasActiveAccess());
+
+        $payment->markApproved($admin, 'Verified on GCash app');
+
+        $payment->refresh();
+        $this->assertSame(PaymentState::Paid, $payment->status);
+        $this->assertSame($admin->id, $payment->approved_by);
+        $this->assertSame('Verified on GCash app', $payment->admin_notes);
+
+        $this->gym->refresh();
+        $this->assertTrue($this->gym->is_active);
+        $this->assertTrue($this->gym->isSubscribed());
+        $this->assertTrue($this->gym->hasActiveAccess());
+        $this->assertSame('monthly', $this->gym->subscription_plan);
+        $this->assertEquals(today()->addDays(30), $this->gym->subscription_ends_at);
+    }
+
+    public function test_platform_admin_can_reject_manual_payment(): void
+    {
+        $admin = User::factory()->create([
+            'is_platform_admin' => true,
+            'is_active' => true,
+        ]);
+
+        $payment = GymPayment::create([
+            'gym_id' => $this->gym->id,
+            'user_id' => $this->owner->id,
+            'plan' => 'monthly',
+            'provider' => 'manual',
+            'amount' => 1499.00,
+            'reference_number' => 'INVALID-REF-999',
+            'status' => PaymentState::Pending,
+        ]);
+
+        $payment->markRejected($admin, 'Reference number not found');
+
+        $payment->refresh();
+        $this->assertSame(PaymentState::Failed, $payment->status);
+        $this->assertSame($admin->id, $payment->approved_by);
+        $this->assertSame('Reference number not found', $payment->admin_notes);
+    }
 }

@@ -14,7 +14,11 @@ class GymClassResource extends Resource
 {
     protected static ?string $model = GymClass::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-academic-cap';
+
+    protected static ?string $navigationGroup = 'Classes';
+
+    protected static ?int $navigationSort = 1;
 
     // Para ma-link sa Gym tenant
     protected static ?string $tenantOwnershipRelationshipName = 'gym';
