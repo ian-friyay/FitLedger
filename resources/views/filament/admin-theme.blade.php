@@ -127,6 +127,17 @@
         box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4) !important;
     }
 
+    /* Unboxed, formal dashboard welcome header (centered, dignified, zero boxes) */
+    html.dark .fi-wi-account,
+    html.dark .fi-widget:has(.fi-account-widget),
+    html.dark .fi-account-widget {
+        background-color: transparent !important;
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+    }
+
     /* Stats Overview Widget Tiles (Exact mirror of reference athletic stats) */
     html.dark .fi-wi-stats-overview-stat {
         padding: 1.25rem !important;

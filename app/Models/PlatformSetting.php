@@ -13,13 +13,17 @@ class PlatformSetting extends Model
 
     public static function get(string $key, mixed $default = null): mixed
     {
-        $setting = static::query()->where('key', $key)->first();
+        try {
+            $setting = static::query()->where('key', $key)->first();
 
-        if ($setting === null || $setting->value === null) {
+            if ($setting === null || $setting->value === null) {
+                return $default;
+            }
+
+            return $setting->value;
+        } catch (\Throwable $e) {
             return $default;
         }
-
-        return $setting->value;
     }
 
     public static function set(string $key, mixed $value): void
@@ -71,5 +75,65 @@ class PlatformSetting extends Model
                 'Send your subscription payment via GCash Express Send. Copy the 13-digit Reference Number and attach a screenshot receipt below.'
             ),
         ];
+    }
+
+    /**
+     * Default landing page configuration.
+     */
+    public static function defaultLandingSettings(): array
+    {
+        return [
+            'show_announcement' => true,
+            'announcement_text' => 'Next-Gen Gym Management OS • Native GCash Dues & 2s QR Turnstile Check-In',
+            'hero_title' => 'The High-Performance Operating System for Gyms & Combat Academies',
+            'hero_subtitle' => 'Eliminate paper logbooks and bloated legacy software. FitLedger unites instant turnstile QR passes, automated GCash dues tracking, and real-time class check-ins into one fast, athletic platform.',
+            'primary_cta_text' => 'Start 14-Day Free Trial',
+            'primary_cta_url' => '/admin/register',
+            'secondary_cta_text' => 'Member Pass Portal',
+            'secondary_cta_url' => '/portal',
+            'stat_1_value' => '< 2s',
+            'stat_1_label' => 'Check-in Scan Speed',
+            'stat_2_value' => '100%',
+            'stat_2_label' => 'Browser-Based Pass (No App Store)',
+            'stat_3_value' => '₱0',
+            'stat_3_label' => 'Payment Merchant Markup',
+            'stat_4_value' => '99.9%',
+            'stat_4_label' => 'Front Desk Kiosk Uptime',
+            'features_heading' => 'Engineered for Combat Sports & High-Throughput Facilities',
+            'features_subheading' => 'Every tool your gym needs to operate at peak efficiency—without confusing clutter or per-member gouging.',
+            'pricing_heading' => 'Simple, Transparent Platform Pricing',
+            'pricing_subheading' => 'One flat fee for your facility. 100% feature access, unlimited members, and zero hidden add-ons.',
+            'pricing_guarantee' => '14 days free trial upon registration. No credit card required. Cancel anytime.',
+            'contact_email' => 'support@fitledger.test',
+            'contact_phone' => '+63 917 888 9999',
+            'contact_address' => 'BGC, Taguig City, Metro Manila, Philippines',
+            'copyright_text' => '© '.date('Y').' FitLedger. All rights reserved. High-Performance Gym Management OS.',
+            'show_pricing' => true,
+            'show_faq' => true,
+        ];
+    }
+
+    /**
+     * Get landing page settings merged with defaults.
+     */
+    public static function getLandingSettings(): array
+    {
+        $raw = static::get('landing_page_settings');
+
+        if (blank($raw)) {
+            return static::defaultLandingSettings();
+        }
+
+        $decoded = is_array($raw) ? $raw : json_decode((string) $raw, true);
+
+        return array_merge(static::defaultLandingSettings(), is_array($decoded) ? $decoded : []);
+    }
+
+    /**
+     * Update landing page settings.
+     */
+    public static function setLandingSettings(array $settings): void
+    {
+        static::set('landing_page_settings', $settings);
     }
 }
