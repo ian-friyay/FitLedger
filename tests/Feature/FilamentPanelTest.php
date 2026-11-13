@@ -91,17 +91,21 @@ class FilamentPanelTest extends TestCase
             ->assertSuccessful();
     }
 
-    public function test_new_user_can_view_gym_registration_page(): void
+    public function test_guest_can_view_split_login_page(): void
     {
-        $newUser = User::factory()->create([
-            'gym_id' => null,
-            'is_platform_admin' => false,
-            'is_active' => true,
-        ]);
-
-        $this->actingAs($newUser)
-            ->get('/admin/new')
+        $this->get('/admin/login')
             ->assertSuccessful()
-            ->assertSee('Register gym');
+            ->assertSee('FitLedger')
+            ->assertSee('Log in to your Account')
+            ->assertSee('Connect with every gym operation.');
+    }
+
+    public function test_guest_can_view_split_registration_page(): void
+    {
+        $this->get('/admin/register')
+            ->assertSuccessful()
+            ->assertSee('FitLedger')
+            ->assertSee('Create an Account')
+            ->assertSee('Connect with every gym operation.');
     }
 }

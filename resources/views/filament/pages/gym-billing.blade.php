@@ -1,202 +1,326 @@
 <x-filament-panels::page>
-    <div class="space-y-8">
+    <div class="space-y-8 max-w-7xl mx-auto">
 
         @if ($isPlatformAdmin)
             <!-- ========================================== -->
             <!-- PLATFORM ADMIN PRICING & CONFIGURATION VIEW -->
             <!-- ========================================== -->
 
-            <!-- Admin Platform Overview Metrics -->
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div class="p-5 rounded-2xl shadow-lg"
-                    style="background-color: #12151b; border: 1px solid rgba(255, 255, 255, 0.08);">
-                    <span class="text-xs font-bold uppercase tracking-wider text-zinc-400">Total Gyms</span>
-                    <div class="mt-2 flex items-baseline justify-between">
-                        <span class="font-athletic text-3xl font-black text-white">{{ $adminStats['totalGyms'] ?? 0 }}</span>
-                        <span class="text-xs text-emerald-400 font-medium">{{ $adminStats['activeGyms'] ?? 0 }} Active</span>
+            <!-- Header Section -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-white/5">
+                <div>
+                    <div class="flex items-center gap-2.5">
+                        <span class="w-2.5 h-2.5 rounded-full bg-orange-500 animate-pulse"></span>
+                        <span class="text-xs font-bold uppercase tracking-widest text-orange-400">Platform SuperAdmin Controls</span>
                     </div>
+                    <h2 class="font-athletic text-3xl sm:text-4xl font-black text-white uppercase tracking-tight mt-1">
+                        Platform Pricing & SaaS Setup
+                    </h2>
+                    <p class="text-xs sm:text-sm text-zinc-400 mt-1 max-w-2xl">
+                        Manage all-access subscription rates, free trial allowances, and GCash receiving coordinates across all gym tenants.
+                    </p>
                 </div>
 
-                <div class="p-5 rounded-2xl shadow-lg"
-                    style="background-color: #12151b; border: 1px solid rgba(255, 255, 255, 0.08);">
-                    <span class="text-xs font-bold uppercase tracking-wider text-zinc-400">Pending Gym Approvals</span>
-                    <div class="mt-2 flex items-baseline justify-between">
-                        <span class="font-athletic text-3xl font-black {{ ($adminStats['pendingGyms'] ?? 0) > 0 ? 'text-amber-400' : 'text-zinc-400' }}">
-                            {{ $adminStats['pendingGyms'] ?? 0 }}
-                        </span>
-                        <a href="{{ url('/admin/gyms') }}" class="text-xs text-orange-400 hover:underline">Review Gyms &rarr;</a>
-                    </div>
-                </div>
-
-                <div class="p-5 rounded-2xl shadow-lg"
-                    style="background-color: #12151b; border: 1px solid rgba(255, 255, 255, 0.08);">
-                    <span class="text-xs font-bold uppercase tracking-wider text-zinc-400">Pending GCash Verifications</span>
-                    <div class="mt-2 flex items-baseline justify-between">
-                        <span class="font-athletic text-3xl font-black {{ ($adminStats['pendingPayments'] ?? 0) > 0 ? 'text-amber-400' : 'text-zinc-400' }}">
-                            {{ $adminStats['pendingPayments'] ?? 0 }}
-                        </span>
-                        <a href="{{ url('/admin/platform-payments') }}" class="text-xs text-orange-400 hover:underline">Review Receipts &rarr;</a>
-                    </div>
-                </div>
-
-                <div class="p-5 rounded-2xl shadow-lg"
-                    style="background-color: #12151b; border: 1px solid rgba(255, 255, 255, 0.08);">
-                    <span class="text-xs font-bold uppercase tracking-wider text-zinc-400">Total SaaS Revenue</span>
-                    <div class="mt-2 flex items-baseline justify-between">
-                        <span class="font-athletic text-2xl sm:text-3xl font-black text-emerald-400">
-                            PHP {{ number_format($adminStats['totalRevenue'] ?? 0, 2) }}
-                        </span>
-                    </div>
+                <div class="flex items-center gap-2">
+                    <a href="{{ url('/admin/gyms') }}"
+                        class="px-4 py-2 rounded-xl text-xs font-bold text-zinc-300 hover:text-white bg-white/5 hover:bg-white/10 border border-white/10 transition-colors flex items-center gap-1.5">
+                        <svg class="w-4 h-4 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                        Manage Gyms
+                    </a>
+                    <a href="{{ url('/admin/platform-payments') }}"
+                        class="px-4 py-2 rounded-xl text-xs font-bold text-zinc-300 hover:text-white bg-white/5 hover:bg-white/10 border border-white/10 transition-colors flex items-center gap-1.5">
+                        <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        Verify Receipts
+                    </a>
                 </div>
             </div>
 
-            <!-- Platform Pricing Configuration Form -->
-            <div class="p-6 sm:p-8 rounded-2xl shadow-2xl"
-                style="background-color: #12151b; border: 1px solid rgba(255, 255, 255, 0.08);">
-                <div class="border-b border-white/5 pb-5 mb-6">
-                    <div class="flex items-center gap-3">
-                        <div class="p-2.5 rounded-xl" style="background-color: rgba(255, 87, 34, 0.15); color: #FF5722;">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                            </svg>
-                        </div>
-                        <div>
-                            <h3 class="font-athletic text-2xl font-black text-white uppercase tracking-wider">
-                                Platform Subscription Pricing & Payment Setup
-                            </h3>
-                            <p class="text-xs text-zinc-400">
-                                As Platform SuperAdmin, configure the fees charged to gym owners and set your receiving GCash account details.
-                            </p>
-                        </div>
+            <!-- Executive KPI Metric Row (Clean 4-column cards) -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem;">
+                
+                <!-- Total Gyms -->
+                <div class="p-5 rounded-2xl shadow-xl flex flex-col justify-between transition-transform hover:-translate-y-0.5"
+                    style="background: linear-gradient(180deg, #161a22 0%, #101318 100%); border: 1px solid rgba(255, 255, 255, 0.08);">
+                    <div class="flex items-center justify-between">
+                        <span class="text-[11px] font-bold uppercase tracking-wider text-zinc-400">Total Gyms</span>
+                        <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-emerald-500/15 text-emerald-400 border border-emerald-500/20">
+                            {{ $adminStats['activeGyms'] ?? 0 }} Active
+                        </span>
+                    </div>
+                    <div class="mt-3">
+                        <span class="font-athletic text-3xl sm:text-4xl font-black text-white block leading-none">
+                            {{ $adminStats['totalGyms'] ?? 0 }}
+                        </span>
+                        <span class="text-[11px] text-zinc-500 mt-1 block">Registered gym branches</span>
                     </div>
                 </div>
 
-                <form wire:submit="savePricingSettings" class="space-y-6">
+                <!-- Pending Gym Approvals -->
+                <div class="p-5 rounded-2xl shadow-xl flex flex-col justify-between transition-transform hover:-translate-y-0.5"
+                    style="background: linear-gradient(180deg, #161a22 0%, #101318 100%); border: 1px solid rgba(255, 255, 255, 0.08);">
+                    <div class="flex items-center justify-between">
+                        <span class="text-[11px] font-bold uppercase tracking-wider text-zinc-400">Pending Approvals</span>
+                        @if (($adminStats['pendingGyms'] ?? 0) > 0)
+                            <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-amber-500/20 text-amber-300 border border-amber-500/30 animate-pulse">
+                                Action Needed
+                            </span>
+                        @else
+                            <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-zinc-800 text-zinc-400">
+                                Clear
+                            </span>
+                        @endif
+                    </div>
+                    <div class="mt-3 flex items-baseline justify-between">
+                        <span class="font-athletic text-3xl sm:text-4xl font-black {{ ($adminStats['pendingGyms'] ?? 0) > 0 ? 'text-amber-400' : 'text-zinc-400' }} block leading-none">
+                            {{ $adminStats['pendingGyms'] ?? 0 }}
+                        </span>
+                        <a href="{{ url('/admin/gyms') }}" class="text-xs text-orange-400 hover:underline font-semibold">Review &rarr;</a>
+                    </div>
+                </div>
+
+                <!-- Pending GCash Verifications -->
+                <div class="p-5 rounded-2xl shadow-xl flex flex-col justify-between transition-transform hover:-translate-y-0.5"
+                    style="background: linear-gradient(180deg, #161a22 0%, #101318 100%); border: 1px solid rgba(255, 255, 255, 0.08);">
+                    <div class="flex items-center justify-between">
+                        <span class="text-[11px] font-bold uppercase tracking-wider text-zinc-400">GCash Receipts</span>
+                        @if (($adminStats['pendingPayments'] ?? 0) > 0)
+                            <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-amber-500/20 text-amber-300 border border-amber-500/30 animate-pulse">
+                                {{ $adminStats['pendingPayments'] }} Unverified
+                            </span>
+                        @else
+                            <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-zinc-800 text-zinc-400">
+                                Up to Date
+                            </span>
+                        @endif
+                    </div>
+                    <div class="mt-3 flex items-baseline justify-between">
+                        <span class="font-athletic text-3xl sm:text-4xl font-black {{ ($adminStats['pendingPayments'] ?? 0) > 0 ? 'text-amber-400' : 'text-zinc-400' }} block leading-none">
+                            {{ $adminStats['pendingPayments'] ?? 0 }}
+                        </span>
+                        <a href="{{ url('/admin/platform-payments') }}" class="text-xs text-orange-400 hover:underline font-semibold">Verify &rarr;</a>
+                    </div>
+                </div>
+
+                <!-- Total SaaS Revenue -->
+                <div class="p-5 rounded-2xl shadow-xl flex flex-col justify-between transition-transform hover:-translate-y-0.5"
+                    style="background: linear-gradient(180deg, #161a22 0%, #101318 100%); border: 1px solid rgba(255, 255, 255, 0.08);">
+                    <div class="flex items-center justify-between">
+                        <span class="text-[11px] font-bold uppercase tracking-wider text-zinc-400">Total SaaS Revenue</span>
+                        <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-emerald-500/15 text-emerald-400 border border-emerald-500/20">
+                            PHP
+                        </span>
+                    </div>
+                    <div class="mt-3">
+                        <span class="font-athletic text-2xl sm:text-3xl font-black text-emerald-400 block leading-none">
+                            PHP {{ number_format($adminStats['totalRevenue'] ?? 0, 2) }}
+                        </span>
+                        <span class="text-[11px] text-zinc-500 mt-1 block">Lifetime verified collections</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Configuration Form -->
+            <form wire:submit="savePricingSettings" class="space-y-6">
+                
+                <!-- Section 1: SaaS Subscription Tiers -->
+                <div class="p-6 sm:p-8 rounded-2xl shadow-xl"
+                    style="background-color: #12151b; border: 1px solid rgba(255, 255, 255, 0.08);">
+                    
+                    <div class="flex items-center gap-3 pb-5 mb-6 border-b border-white/5">
+                        <div class="w-9 h-9 rounded-xl flex items-center justify-center font-bold text-sm text-white"
+                            style="background: linear-gradient(135deg, #FF6D00 0%, #FF3D00 100%);">
+                            1
+                        </div>
+                        <div>
+                            <h3 class="font-athletic text-xl sm:text-2xl font-bold text-white uppercase tracking-wider">
+                                SaaS Subscription Tiers & Trial Period
+                            </h3>
+                            <p class="text-xs text-zinc-400">
+                                Define the flat fee and free trial allowance charged per gym location.
+                            </p>
+                        </div>
+                    </div>
+
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <!-- Monthly Price -->
-                        <div class="space-y-1.5">
+                        <div class="space-y-2">
                             <label class="block text-xs font-bold uppercase tracking-wider text-zinc-300">
-                                Monthly Subscription Price (PHP) <span class="text-rose-500">*</span>
+                                Monthly Subscription (PHP) <span class="text-rose-500">*</span>
                             </label>
                             <div class="relative">
                                 <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-xs font-bold text-zinc-500">₱</span>
                                 <input type="number" step="0.01" wire:model="monthlyPrice"
-                                    class="w-full pl-8 pr-4 py-2.5 rounded-xl text-sm font-bold text-white placeholder-zinc-500 focus:ring-2 focus:ring-orange-500 transition-colors"
+                                    class="w-full pl-8 pr-4 py-3 rounded-xl text-sm font-bold text-white placeholder-zinc-500 focus:ring-2 focus:ring-orange-500 transition-colors"
                                     style="background-color: #0a0c10; border: 1px solid rgba(255, 255, 255, 0.12);"
                                     placeholder="1499.00" required>
                             </div>
-                            <span class="text-[11px] text-zinc-500">Billed every 30 days per gym.</span>
+                            <span class="text-[11px] text-zinc-500 block">Recurring every 30 days per gym.</span>
                             @error('monthlyPrice') <span class="text-xs text-rose-400 block">{{ $message }}</span> @enderror
                         </div>
 
                         <!-- Annual Price -->
-                        <div class="space-y-1.5">
+                        <div class="space-y-2">
                             <label class="block text-xs font-bold uppercase tracking-wider text-zinc-300">
-                                Annual Subscription Price (PHP) <span class="text-rose-500">*</span>
+                                Annual Subscription (PHP) <span class="text-rose-500">*</span>
                             </label>
                             <div class="relative">
                                 <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-xs font-bold text-zinc-500">₱</span>
                                 <input type="number" step="0.01" wire:model="annualPrice"
-                                    class="w-full pl-8 pr-4 py-2.5 rounded-xl text-sm font-bold text-white placeholder-zinc-500 focus:ring-2 focus:ring-orange-500 transition-colors"
+                                    class="w-full pl-8 pr-4 py-3 rounded-xl text-sm font-bold text-white placeholder-zinc-500 focus:ring-2 focus:ring-orange-500 transition-colors"
                                     style="background-color: #0a0c10; border: 1px solid rgba(255, 255, 255, 0.12);"
                                     placeholder="14999.00" required>
                             </div>
-                            <span class="text-[11px] text-zinc-500">Billed every 365 days per gym.</span>
+                            <span class="text-[11px] text-zinc-500 block">Recurring every 365 days (~17% annual discount).</span>
                             @error('annualPrice') <span class="text-xs text-rose-400 block">{{ $message }}</span> @enderror
                         </div>
 
                         <!-- Trial Days -->
-                        <div class="space-y-1.5">
+                        <div class="space-y-2">
                             <label class="block text-xs font-bold uppercase tracking-wider text-zinc-300">
                                 Free Trial Duration (Days) <span class="text-rose-500">*</span>
                             </label>
                             <input type="number" min="1" max="365" wire:model="trialDays"
-                                class="w-full px-4 py-2.5 rounded-xl text-sm font-bold text-white placeholder-zinc-500 focus:ring-2 focus:ring-orange-500 transition-colors"
+                                class="w-full px-4 py-3 rounded-xl text-sm font-bold text-white placeholder-zinc-500 focus:ring-2 focus:ring-orange-500 transition-colors"
                                 style="background-color: #0a0c10; border: 1px solid rgba(255, 255, 255, 0.12);"
                                 placeholder="14" required>
-                            <span class="text-[11px] text-zinc-500">Free days granted when a gym is approved on Trial.</span>
+                            <span class="text-[11px] text-zinc-500 block">Free days granted when a gym is approved on Trial.</span>
                             @error('trialDays') <span class="text-xs text-rose-400 block">{{ $message }}</span> @enderror
                         </div>
                     </div>
+                </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-white/5">
+                <!-- Section 2: GCash Receiving Coordinates -->
+                <div class="p-6 sm:p-8 rounded-2xl shadow-xl"
+                    style="background-color: #12151b; border: 1px solid rgba(255, 255, 255, 0.08);">
+                    
+                    <div class="flex items-center gap-3 pb-5 mb-6 border-b border-white/5">
+                        <div class="w-9 h-9 rounded-xl flex items-center justify-center font-bold text-sm text-white"
+                            style="background: linear-gradient(135deg, #FF6D00 0%, #FF3D00 100%);">
+                            2
+                        </div>
+                        <div>
+                            <h3 class="font-athletic text-xl sm:text-2xl font-bold text-white uppercase tracking-wider">
+                                Platform GCash Payment Coordinates
+                            </h3>
+                            <p class="text-xs text-zinc-400">
+                                The destination account information displayed to gym owners during checkout.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <!-- Admin GCash Mobile Number -->
-                        <div class="space-y-1.5">
+                        <div class="space-y-2">
                             <label class="block text-xs font-bold uppercase tracking-wider text-zinc-300">
                                 Platform GCash Mobile Number <span class="text-rose-500">*</span>
                             </label>
                             <input type="text" wire:model="adminGcashNumber"
-                                class="w-full px-4 py-2.5 rounded-xl text-sm font-bold text-white placeholder-zinc-500 focus:ring-2 focus:ring-orange-500 transition-colors"
+                                class="w-full px-4 py-3 rounded-xl text-sm font-mono text-white placeholder-zinc-500 focus:ring-2 focus:ring-orange-500 transition-colors"
                                 style="background-color: #0a0c10; border: 1px solid rgba(255, 255, 255, 0.12);"
                                 placeholder="0917-888-9999" required>
-                            <span class="text-[11px] text-zinc-500">The destination mobile number displayed to gym owners.</span>
+                            <span class="text-[11px] text-zinc-500 block">Primary GCash number where gym owners transfer funds.</span>
                             @error('adminGcashNumber') <span class="text-xs text-rose-400 block">{{ $message }}</span> @enderror
                         </div>
 
                         <!-- Admin GCash Account Name -->
-                        <div class="space-y-1.5">
+                        <div class="space-y-2">
                             <label class="block text-xs font-bold uppercase tracking-wider text-zinc-300">
                                 Platform GCash Account Name <span class="text-rose-500">*</span>
                             </label>
                             <input type="text" wire:model="adminGcashName"
-                                class="w-full px-4 py-2.5 rounded-xl text-sm font-bold text-white placeholder-zinc-500 focus:ring-2 focus:ring-orange-500 transition-colors"
+                                class="w-full px-4 py-3 rounded-xl text-sm font-bold text-white placeholder-zinc-500 focus:ring-2 focus:ring-orange-500 transition-colors"
                                 style="background-color: #0a0c10; border: 1px solid rgba(255, 255, 255, 0.12);"
                                 placeholder="FitLedger Admin / Adrian" required>
-                            <span class="text-[11px] text-zinc-500">Account name shown to owners for verification.</span>
+                            <span class="text-[11px] text-zinc-500 block">Registered GCash account name shown for verification.</span>
                             @error('adminGcashName') <span class="text-xs text-rose-400 block">{{ $message }}</span> @enderror
                         </div>
                     </div>
 
                     <!-- Payment Instructions -->
-                    <div class="space-y-1.5 pt-2">
+                    <div class="space-y-2 mt-6 pt-5 border-t border-white/5">
                         <label class="block text-xs font-bold uppercase tracking-wider text-zinc-300">
-                            Custom Payment Instructions / Notes for Gym Owners
+                            Custom Payment Instructions / Notice for Gym Owners
                         </label>
                         <textarea wire:model="adminPaymentInstructions" rows="3"
-                            class="w-full px-4 py-2.5 rounded-xl text-sm text-zinc-200 placeholder-zinc-500 focus:ring-2 focus:ring-orange-500 transition-colors"
+                            class="w-full px-4 py-3 rounded-xl text-xs text-zinc-200 placeholder-zinc-500 focus:ring-2 focus:ring-orange-500 transition-colors leading-relaxed"
                             style="background-color: #0a0c10; border: 1px solid rgba(255, 255, 255, 0.12);"
-                            placeholder="Send payment via GCash Express Send. Include your Gym Name in the message."></textarea>
+                            placeholder="Send payment via GCash Express Send. Copy the reference number and attach screenshot receipt."></textarea>
                         @error('adminPaymentInstructions') <span class="text-xs text-rose-400 block">{{ $message }}</span> @enderror
                     </div>
-
-                    <!-- Submit Button -->
-                    <div class="flex items-center justify-end gap-3 pt-4 border-t border-white/5">
-                        <button type="submit"
-                            class="px-6 py-3 rounded-xl font-athletic text-sm font-black uppercase tracking-wider text-white shadow-lg transition-transform hover:scale-105 active:scale-95 flex items-center gap-2"
-                            style="background: linear-gradient(135deg, #FF6D00 0%, #FF3D00 100%);">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                            </svg>
-                            Save Platform Pricing & Payment Details
-                        </button>
-                    </div>
-                </form>
-            </div>
-
-            <!-- Live Preview of Pricing Tiers -->
-            <div class="space-y-4 pt-4">
-                <div class="flex items-center justify-between">
-                    <h4 class="font-athletic text-xl font-bold text-white uppercase tracking-wider">
-                        Live Preview (What Gym Owners See)
-                    </h4>
-                    <span class="text-xs text-zinc-400">Updated in real-time</span>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl">
+                <!-- Action Bar -->
+                <div class="p-5 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xl"
+                    style="background-color: #12151b; border: 1px solid rgba(255, 255, 255, 0.08);">
+                    <div class="text-xs text-zinc-400 flex items-center gap-2">
+                        <svg class="w-4 h-4 text-emerald-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <span>Pricing changes take effect immediately on all new subscriptions and renewals.</span>
+                    </div>
+
+                    <button type="submit"
+                        class="px-8 py-3.5 rounded-xl font-athletic text-sm font-black uppercase tracking-wider text-white shadow-xl transition-all hover:scale-105 active:scale-95 flex items-center gap-2 flex-shrink-0"
+                        style="background: linear-gradient(135deg, #FF6D00 0%, #FF3D00 100%);">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                        Save Platform Pricing & Payment Details
+                    </button>
+                </div>
+
+            </form>
+
+            <!-- Section 3: Live Preview of Pricing Tiers -->
+            <div class="space-y-4 pt-4">
+                <div class="flex items-center justify-between pb-2 border-b border-white/5">
+                    <div>
+                        <h4 class="font-athletic text-xl font-bold text-white uppercase tracking-wider">
+                            Live Pricing Preview
+                        </h4>
+                        <p class="text-xs text-zinc-400">Real-time preview of how subscription options appear to gym owners.</p>
+                    </div>
+                    <span class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 border border-emerald-500/20">
+                        Synchronized
+                    </span>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     @foreach ($plans as $key => $plan)
-                        <div class="p-6 rounded-2xl"
-                            style="background-color: #12151b; border: {{ $key === 'annual' ? '2px solid #FF5722' : '1px solid rgba(255, 255, 255, 0.08)' }};">
-                            <div class="flex items-center justify-between mb-2">
-                                <h5 class="font-athletic text-2xl font-bold text-white uppercase">{{ $plan['name'] }}</h5>
-                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase text-white"
-                                    style="background: linear-gradient(135deg, #FF6D00 0%, #FF3D00 100%);">
-                                    {{ $plan['badge'] }}
-                                </span>
+                        <div class="p-6 sm:p-8 rounded-2xl flex flex-col justify-between"
+                            style="background-color: #12151b; border: {{ $key === 'annual' ? '2px solid #FF5722' : '1px solid rgba(255, 255, 255, 0.08)' }}; box-shadow: {{ $key === 'annual' ? '0 10px 30px -10px rgba(255, 87, 34, 0.3)' : '0 10px 25px -5px rgba(0, 0, 0, 0.4)' }};">
+                            
+                            <div>
+                                <div class="flex items-center justify-between mb-2">
+                                    <h5 class="font-athletic text-2xl font-bold text-white uppercase">{{ $plan['name'] }}</h5>
+                                    @if (!empty($plan['badge']))
+                                        <span class="px-2.5 py-1 rounded-full text-[10px] font-black uppercase text-white shadow-md"
+                                            style="background: linear-gradient(135deg, #FF6D00 0%, #FF3D00 100%);">
+                                            {{ $plan['badge'] }}
+                                        </span>
+                                    @endif
+                                </div>
+                                <p class="text-xs text-zinc-400 mb-5 min-h-[32px]">{{ $plan['description'] }}</p>
+                                <div class="flex items-baseline gap-2">
+                                    <span class="font-athletic text-4xl sm:text-5xl font-black text-white">PHP {{ number_format($plan['price'], 2) }}</span>
+                                    <span class="text-xs text-zinc-400 font-medium">/ {{ $plan['days'] }} days</span>
+                                </div>
+
+                                <ul class="mt-6 space-y-2 text-xs text-zinc-300">
+                                    <li class="flex items-center gap-2">
+                                        <svg class="w-4 h-4 text-emerald-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                                        <span>Unlimited Members & Pass Subscriptions</span>
+                                    </li>
+                                    <li class="flex items-center gap-2">
+                                        <svg class="w-4 h-4 text-emerald-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                                        <span>Turnstile & QR Scanner Station</span>
+                                    </li>
+                                    <li class="flex items-center gap-2">
+                                        <svg class="w-4 h-4 text-emerald-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                                        <span>Classes & Group Session Management</span>
+                                    </li>
+                                </ul>
                             </div>
-                            <p class="text-xs text-zinc-400 mb-4">{{ $plan['description'] }}</p>
-                            <div class="flex items-baseline gap-2">
-                                <span class="font-athletic text-4xl font-black text-white">PHP {{ number_format($plan['price'], 2) }}</span>
-                                <span class="text-xs text-zinc-400 font-medium">/ {{ $plan['days'] }} days</span>
+
+                            <div class="mt-6 pt-4 border-t border-white/5">
+                                <span class="text-[11px] text-zinc-500 block text-center">Owner Action: Pay via GCash</span>
                             </div>
                         </div>
                     @endforeach
@@ -492,7 +616,8 @@
                                     </label>
                                     <input type="file" wire:model="proofImage" accept="image/*"
                                         class="w-full px-3 py-2 text-xs text-zinc-400 rounded-xl cursor-pointer focus:outline-none file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-orange-500/20 file:text-orange-400 hover:file:bg-orange-500/30"
-                                        style="background-color: #0a0c10; border: 1px solid rgba(255, 255, 255, 0.12);">
+                                        style="background-color: #0a0c10; border: 1px solid rgba(255, 255, 255, 0.12);"
+                                        required>
                                     <div wire:loading wire:target="proofImage" class="text-xs text-orange-400 mt-1">Uploading receipt...</div>
                                     @error('proofImage') <span class="text-xs text-rose-400 block">{{ $message }}</span> @enderror
                                 </div>

@@ -38,8 +38,8 @@ class AdminPanelProvider extends PanelProvider
             ->brandLogoHeight('2.25rem')
             ->font('Plus Jakarta Sans')
             ->darkMode(true)
-            ->login()
-            ->registration()
+            ->login(\App\Filament\Pages\Auth\Login::class)
+            ->registration(\App\Filament\Pages\Auth\Register::class)
             ->profile()
             ->passwordReset()
             ->colors([
@@ -49,10 +49,6 @@ class AdminPanelProvider extends PanelProvider
             ->renderHook(
                 PanelsRenderHook::HEAD_END,
                 fn () => view('filament.admin-theme')
-            )
-            ->renderHook(
-                PanelsRenderHook::AUTH_LOGIN_FORM_BEFORE,
-                fn () => view('filament.quick-login')
             )
             ->tenant(Gym::class, slugAttribute: 'slug')
             ->tenantRegistration(RegisterGym::class)
