@@ -109,7 +109,6 @@ class Gym extends Model implements HasName
         return $this->hasMany(ClassBooking::class);
     }
 
-    // ITO YUNG KULANG KANINA
     public function gymClasses(): HasMany
     {
         return $this->hasMany(GymClass::class);

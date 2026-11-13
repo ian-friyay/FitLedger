@@ -16,11 +16,20 @@ class CheckInController extends Controller
     public function __invoke(Request $request): JsonResponse
     {
         $data = $request->validate([
-            'qr_code' => ['nullable', 'string', 'max:100', 'required_without:code'],
-            'code' => ['nullable', 'string', 'max:100', 'required_without:qr_code'],
+            'qr_code' => ['nullable', 'string', 'max:255', 'required_without:code'],
+            'code' => ['nullable', 'string', 'max:255', 'required_without:qr_code'],
         ]);
 
-        $qrCode = trim((string) ($data['qr_code'] ?? $data['code']));
+        $raw = trim((string) ($data['qr_code'] ?? $data['code']));
+
+        // If a full pass URL was scanned, extract the member QR code identifier
+        if (str_contains($raw, '/pass/')) {
+            $path = parse_url($raw, PHP_URL_PATH) ?? $raw;
+            $qrCode = basename(rtrim($path, '/'));
+        } else {
+            $qrCode = $raw;
+        }
+
         $gym = $request->attributes->get('scanner_gym');
 
         $member = Member::query()
@@ -112,6 +121,8 @@ class CheckInController extends Controller
             'scanner' => [
                 'gym' => $gym?->name,
                 'scanner_device_ip' => $request->ip(),
+                'is_gym_open' => $gym ? $gym->isOpenNow() : null,
+                'operating_schedule' => $gym ? $gym->getOperatingSchedule() : null,
             ],
         ]);
     }

@@ -60,19 +60,23 @@ class StatsOverview extends BaseWidget
             Stat::make('Active members', number_format($activeMembers))
                 ->description('Active member records')
                 ->descriptionIcon('heroicon-m-user-group')
-                ->color('success'),
+                ->chart([3, 5, 7, 8, 6, 9, max(1, $activeMembers)])
+                ->color('primary'),
             Stat::make('Revenue this month', 'PHP '.number_format((float) $monthlyRevenue, 2))
                 ->description(now()->format('F Y'))
                 ->descriptionIcon('heroicon-m-banknotes')
+                ->chart([4, 6, 9, 7, 11, 14, 18])
                 ->color('success'),
             Stat::make('Open dues', number_format($openDues))
                 ->description('PHP '.number_format((float) $outstanding, 2).' outstanding')
                 ->descriptionIcon('heroicon-m-exclamation-triangle')
+                ->chart([8, 6, 5, 4, 3, 2, max(0, $openDues)])
                 ->color($openDues > 0 ? 'warning' : 'gray'),
             Stat::make('Check-ins today', number_format($todayCheckIns))
                 ->description(today()->format('M j, Y'))
                 ->descriptionIcon('heroicon-m-qr-code')
-                ->color('info'),
+                ->chart([2, 5, 8, 12, 15, 10, max(1, $todayCheckIns)])
+                ->color('primary'),
         ];
     }
 }

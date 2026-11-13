@@ -3,6 +3,7 @@
 namespace App\Providers\Filament;
 
 use App\Filament\Pages\Tenancy\EditGymProfile;
+use App\Filament\Pages\Tenancy\RegisterGym;
 use App\Filament\Widgets\LatestCheckIns;
 use App\Filament\Widgets\StatsOverview;
 use App\Models\Gym;
@@ -14,6 +15,7 @@ use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
+use Filament\View\PanelsRenderHook;
 use Filament\Widgets;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
@@ -31,13 +33,24 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->brandName('FitLedger')
+            ->brandLogo(fn () => view('filament.brand-logo'))
+            ->brandLogoHeight('2.25rem')
+            ->font('Plus Jakarta Sans')
+            ->darkMode(true)
             ->login()
+            ->registration()
             ->profile()
             ->passwordReset()
             ->colors([
-                'primary' => Color::Emerald,
+                'primary' => Color::Orange,
+                'gray' => Color::Zinc,
             ])
+            ->renderHook(
+                PanelsRenderHook::HEAD_END,
+                fn () => view('filament.admin-theme')
+            )
             ->tenant(Gym::class, slugAttribute: 'slug')
+            ->tenantRegistration(RegisterGym::class)
             ->tenantProfile(EditGymProfile::class)
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
