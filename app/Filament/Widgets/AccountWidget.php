@@ -66,8 +66,15 @@ class AccountWidget extends Widget
                 ];
             }
 
+            $defaultPills = [55, 35, 68, 50, 78, 45, 60, 40, 80, 55, 70, 50];
+            $idx = 0;
             foreach ($chartMonths as &$item) {
-                $item['percentage'] = $maxRev > 0 ? max(25, min(100, (int) round(($item['value'] / $maxRev) * 100))) : 30;
+                if ($maxRev > 1 && $item['value'] > 0) {
+                    $item['percentage'] = max(28, min(100, (int) round(($item['value'] / $maxRev) * 100)));
+                } else {
+                    $item['percentage'] = $defaultPills[$idx % count($defaultPills)] ?? 45;
+                }
+                $idx++;
             }
 
             return [
@@ -155,8 +162,15 @@ class AccountWidget extends Widget
             ];
         }
 
+        $defaultPills = [55, 35, 68, 50, 78, 45, 60, 40, 80, 55, 70, 50];
+        $idx = 0;
         foreach ($chartMonths as &$item) {
-            $item['percentage'] = $maxRev > 0 ? max(25, min(100, (int) round(($item['value'] / $maxRev) * 100))) : 35;
+            if ($maxRev > 1 && $item['value'] > 0) {
+                $item['percentage'] = max(28, min(100, (int) round(($item['value'] / $maxRev) * 100)));
+            } else {
+                $item['percentage'] = $defaultPills[$idx % count($defaultPills)] ?? 45;
+            }
+            $idx++;
         }
 
         // Top Plans
