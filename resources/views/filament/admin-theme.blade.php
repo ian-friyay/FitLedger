@@ -308,8 +308,15 @@
 
     @media (min-width: 1024px) {
         .fitledger-dashboard-grid {
-            grid-template-columns: minmax(0, 63%) minmax(0, 37%);
+            grid-template-columns: minmax(0, 62%) minmax(0, 38%);
         }
+    }
+
+    .fl-dashboard-col {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+        width: 100%;
     }
 
     .fitledger-subcards-grid {
@@ -338,20 +345,20 @@
         }
     }
 
-    /* Memberstack-style Soft Dark Elevated Floating Cards */
+    /* Memberstack-style Soft Dark Elevated Floating Cards (Tightened & Structured) */
     .fl-soft-card {
         background-color: #161c26 !important;
         border: none !important;
-        border-radius: 1.75rem !important; /* rounded-3xl / 28px */
-        box-shadow: 0 14px 34px -4px rgba(0, 0, 0, 0.45), 0 4px 14px -2px rgba(0, 0, 0, 0.3) !important;
-        transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+        border-radius: 1rem !important; /* rounded-2xl */
+        box-shadow: 0 10px 25px -4px rgba(0, 0, 0, 0.45), 0 4px 10px -2px rgba(0, 0, 0, 0.3) !important;
+        position: relative;
     }
 
     .fl-soft-inner-card {
-        background-color: #1e2634 !important;
+        background-color: #1c2331 !important;
         border: none !important;
-        border-radius: 1.25rem !important; /* rounded-2xl / 20px */
-        box-shadow: 0 4px 14px -1px rgba(0, 0, 0, 0.25) !important;
+        border-radius: 0.875rem !important; /* rounded-xl */
+        box-shadow: 0 4px 12px -1px rgba(0, 0, 0, 0.25) !important;
         transition: all 0.2s ease !important;
     }
 
@@ -376,7 +383,8 @@
 
     .fl-soft-pill-btn-green {
         background-color: #22c55e !important;
-        color: #05130a !important;
+        color: #000000 !important;
+        font-weight: 800 !important;
         border: none !important;
         border-radius: 9999px !important;
         box-shadow: 0 4px 16px rgba(34, 197, 94, 0.35) !important;
