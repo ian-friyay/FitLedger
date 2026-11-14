@@ -16,13 +16,14 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends \
         libfreetype6-dev \
         libjpeg62-turbo-dev \
+        libicu-dev \
         libonig-dev \
         libpng-dev \
         libpq-dev \
         libzip-dev \
         unzip \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install -j"$(nproc)" bcmath exif gd mbstring opcache pdo_pgsql zip \
+    && docker-php-ext-install -j"$(nproc)" bcmath exif gd intl mbstring opcache pdo_pgsql zip \
     && a2enmod headers rewrite \
     && rm -rf /var/lib/apt/lists/*
 
