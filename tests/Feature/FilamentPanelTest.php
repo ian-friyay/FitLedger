@@ -53,6 +53,7 @@ class FilamentPanelTest extends TestCase
 
         $this->get($base)->assertSuccessful();
         $this->get("{$base}/members")->assertSuccessful();
+        $this->get("{$base}/members/create")->assertSuccessful();
         $this->get("{$base}/subscriptions")->assertSuccessful();
         $this->get("{$base}/plans")->assertSuccessful();
         $this->get("{$base}/payments")->assertSuccessful();
@@ -60,6 +61,25 @@ class FilamentPanelTest extends TestCase
         $this->get("{$base}/scan")->assertSuccessful();
         $this->get("{$base}/users")->assertSuccessful();
         $this->get("{$base}/profile")->assertSuccessful();
+    }
+
+    public function test_dashboard_actions_link_to_existing_tenant_pages(): void
+    {
+        $this->actingAs($this->owner);
+        \Filament\Facades\Filament::setTenant($this->gym);
+
+        \Livewire\Livewire::test(\App\Filament\Widgets\AccountWidget::class)
+            ->assertSee(route('filament.admin.resources.check-ins.index', ['tenant' => $this->gym->slug]), false)
+            ->assertSee(route('filament.admin.pages.scan', ['tenant' => $this->gym->slug]), false)
+            ->assertSee(route('filament.admin.resources.members.create', ['tenant' => $this->gym->slug]), false)
+            ->assertSee(route('filament.admin.resources.members.index', ['tenant' => $this->gym->slug]), false)
+            ->assertSee('fl-collection-ring', false)
+            ->assertSee('fl-banner-action', false)
+            ->assertSee('fl-stat-meter', false)
+            ->assertSee('stroke-width="1.4"', false)
+            ->assertDontSee('+12%')
+            ->assertDontSee('+7%')
+            ->assertDontSee('20%');
     }
 
     public function test_owner_cannot_access_another_gym(): void
@@ -99,6 +119,9 @@ class FilamentPanelTest extends TestCase
             ->assertSee('images/fitledger-logo.jpg')
             ->assertSee('shadow-orange-500/20')
             ->assertSee('Log in to your Account')
+            ->assertSee('Welcome back! Enter your credentials.')
+            ->assertDontSee('Quick Demo Role')
+            ->assertDontSee('admin@fitledger.test')
             ->assertDontSee('Scanner Station');
     }
 

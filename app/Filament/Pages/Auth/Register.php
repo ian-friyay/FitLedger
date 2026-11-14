@@ -61,7 +61,9 @@ class Register extends BaseRegister
 
         $this->requiresOtp = true;
         $this->pendingRegistrationData = $data;
-        $this->devOtpHint = $otpCode;
+        if (app()->environment(['local', 'testing'])) {
+            $this->devOtpHint = $otpCode;
+        }
 
         Notification::make()
             ->title('Verification code sent')
@@ -126,7 +128,9 @@ class Register extends BaseRegister
             'code' => $otpCode,
         ], now()->addMinutes(10));
 
-        $this->devOtpHint = $otpCode;
+        if (app()->environment(['local', 'testing'])) {
+            $this->devOtpHint = $otpCode;
+        }
 
         try {
             Mail::to($data['email'])->send(new SendOtpCodeMail($otpCode, $data['name'], 'Account Registration'));

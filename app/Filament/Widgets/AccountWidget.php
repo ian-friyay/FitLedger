@@ -89,13 +89,11 @@ class AccountWidget extends Widget
                 'chartMonths' => $chartMonths,
                 'stat1Label' => 'Active Facilities',
                 'stat1Value' => (string) $activeGyms,
-                'stat1Badge' => '+12%',
                 'stat1Target' => $totalGyms > 0 ? (int) round(($activeGyms / $totalGyms) * 100) : 100,
                 'stat1TargetLabel' => "{$activeGyms} of {$totalGyms} gyms active",
                 'stat2Label' => 'Pending Approvals',
                 'stat2Value' => (string) $pendingGyms,
                 'stat2Badge' => $pendingGyms > 0 ? 'Action' : 'Clear',
-                'stat2Target' => $pendingGyms > 0 ? 35 : 100,
                 'stat2Sub' => $pendingGyms > 0 ? 'Requires admin review' : 'All registrations verified',
                 'ringLabel' => 'Platform Status',
                 'ringValue' => '99.9%',
@@ -205,7 +203,9 @@ class AccountWidget extends Widget
         $totalBilled = $monthlyRevenue + $outstandingDues;
         $collectionRate = $totalBilled > 0 ? min(100, (int) round(($monthlyRevenue / $totalBilled) * 100)) : 100;
 
-        $scannerUrl = url('/admin/' . ($tenant?->slug ?? 'default') . '/scan-qr-code');
+        $scannerUrl = route('filament.admin.pages.scan', [
+            'tenant' => $tenant?->slug ?? 'default',
+        ]);
 
         return [
             'user' => $user,
@@ -219,14 +219,11 @@ class AccountWidget extends Widget
             'chartMonths' => $chartMonths,
             'stat1Label' => 'Active Members',
             'stat1Value' => (string) $activeMembers,
-            'stat1Badge' => '+12%',
             'stat1Target' => $memberFillPercentage,
-            'stat1TargetLabel' => "Target: {$targetMembers} members",
+            'stat1TargetLabel' => "{$activeMembers} of {$targetMembers} members",
             'stat2Label' => 'Check-Ins Today',
             'stat2Value' => (string) $todayCheckIns,
-            'stat2Badge' => '+7%',
-            'stat2Target' => min(100, max(20, $todayCheckIns * 5)),
-            'stat2Sub' => 'Front-desk live activity',
+            'stat2Sub' => 'Front-desk activity',
             'ringLabel' => 'Collections',
             'ringValue' => 'PHP ' . number_format($monthlyRevenue, 0) . ' / ' . number_format($totalBilled, 0),
             'ringPercentage' => $collectionRate,

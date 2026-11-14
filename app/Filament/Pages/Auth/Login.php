@@ -39,7 +39,7 @@ class Login extends BaseLogin
     {
         return $this->requiresOtp 
             ? "Enter the 6-digit code sent to {$this->pendingUserEmail}" 
-            : 'Welcome back! Select a demo role or enter your credentials.';
+            : 'Welcome back! Enter your credentials.';
     }
 
     public function authenticate(): ?LoginResponse
@@ -78,7 +78,9 @@ class Login extends BaseLogin
         $this->pendingUserId = $user->id;
         $this->pendingUserEmail = $user->email;
         $this->rememberMe = (bool) ($data['remember'] ?? false);
-        $this->devOtpHint = $otpCode;
+        if (app()->environment(['local', 'testing'])) {
+            $this->devOtpHint = $otpCode;
+        }
 
         Notification::make()
             ->title('Verification code sent')
@@ -123,7 +125,9 @@ class Login extends BaseLogin
 
         $otpCode = (string) random_int(100000, 999999);
         Cache::put('auth_otp_' . $user->id, $otpCode, now()->addMinutes(10));
-        $this->devOtpHint = $otpCode;
+        if (app()->environment(['local', 'testing'])) {
+            $this->devOtpHint = $otpCode;
+        }
 
         try {
             Mail::to($user->email)->send(new SendOtpCodeMail($otpCode, $user->name, 'Sign In'));

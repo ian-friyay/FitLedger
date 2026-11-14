@@ -43,6 +43,35 @@ class AuthOtpTest extends TestCase
         $this->assertGuest();
     }
 
+    public function test_authentication_and_registration_do_not_expose_otp_hints_in_production(): void
+    {
+        $this->app->instance('env', 'production');
+        Mail::fake();
+
+        User::factory()->create([
+            'email' => 'coach@testgym.com',
+            'password' => Hash::make('password123'),
+        ]);
+
+        Livewire::test(Login::class)
+            ->fillForm([
+                'email' => 'coach@testgym.com',
+                'password' => 'password123',
+            ])
+            ->call('authenticate')
+            ->assertSet('devOtpHint', null);
+
+        Livewire::test(Register::class)
+            ->fillForm([
+                'name' => 'John Doe',
+                'email' => 'johndoe@testgym.com',
+                'password' => 'secretPassword123',
+                'passwordConfirmation' => 'secretPassword123',
+            ])
+            ->call('register')
+            ->assertSet('devOtpHint', null);
+    }
+
     public function test_login_rejects_invalid_otp_code(): void
     {
         Mail::fake();

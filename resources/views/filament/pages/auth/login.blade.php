@@ -31,20 +31,6 @@
     @if (! $requiresOtp)
         <!-- STAGE 1: CREDENTIALS SIGN-IN -->
 
-        <!-- Quick Demo Role Dropdown (Clean & Uncrowded) -->
-        <div class="flex items-center justify-between p-2.5 rounded-xl bg-white/[0.03] border border-white/5">
-            <span class="text-xs text-zinc-400 font-medium flex items-center gap-1.5">
-                <svg class="w-3.5 h-3.5 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                Quick Demo Role:
-            </span>
-            <select onchange="if(this.value){ const [e, p] = this.value.split('|'); fillLoginCredentials(e, p); this.selectedIndex = 0; }"
-                class="bg-[#0a0c10] border border-white/10 text-zinc-300 text-xs rounded-lg px-2.5 py-1.5 focus:border-orange-500 focus:ring-0 cursor-pointer">
-                <option value="">Select demo account...</option>
-                <option value="admin@fitledger.test|password">👑 Platform Admin</option>
-                <option value="owner@fitledger.test|password">🥊 Gym Owner</option>
-            </select>
-        </div>
-
         <!-- Divider -->
         <div class="relative">
             <div class="absolute inset-0 flex items-center">
@@ -125,18 +111,4 @@
             </div>
         </div>
     @endif
-
-    <!-- Helper JS for demo login prefill -->
-    <script>
-        function fillLoginCredentials(email, password) {
-            const emailInput = document.querySelector('input[type="email"]');
-            const passwordInput = document.querySelector('input[type="password"]');
-            if (emailInput && passwordInput) {
-                emailInput.value = email;
-                emailInput.dispatchEvent(new Event('input', { bubbles: true }));
-                passwordInput.value = password;
-                passwordInput.dispatchEvent(new Event('input', { bubbles: true }));
-            }
-        }
-    </script>
 </div>

@@ -5,7 +5,7 @@
 @endphp
 
 <x-filament-widgets::widget>
-    <div class="fi-account-widget space-y-6 w-full max-w-7xl mx-auto font-sans">
+    <div class="fi-account-widget space-y-5 w-full max-w-7xl mx-auto font-sans">
 
         <!-- Top Header: Soft Greeting & Action Pills -->
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-0.5">
@@ -24,30 +24,32 @@
             </div>
 
             <!-- Right Action Pill Buttons (High Contrast + New Member) -->
-            <div class="flex items-center gap-2.5 flex-wrap">
-                <a href="{{ url('/admin/reports/attendance') }}" 
-                    class="fl-soft-pill-btn px-4 py-2 text-xs font-semibold text-slate-300 hover:text-white flex items-center gap-1.5 shadow-sm">
-                    <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
-                    <span>Export</span>
-                </a>
+            <div class="flex items-center gap-3 flex-wrap">
+                @if ($tenant)
+                    <a href="{{ route('filament.admin.resources.check-ins.index', ['tenant' => $tenant->slug]) }}"
+                        class="fl-soft-pill-btn px-4 py-2 text-xs font-semibold text-slate-300 hover:text-white flex items-center gap-1.5 shadow-sm">
+                        <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+                        <span>Export</span>
+                    </a>
+                @endif
 
                 @if (! $data['isPlatformAdmin'] && $tenant)
-                    <a href="{{ url('/admin/' . $tenant->slug . '/scan-qr-code') }}"
+                    <a href="{{ route('filament.admin.pages.scan', ['tenant' => $tenant->slug]) }}"
                         class="fl-soft-pill-btn px-4 py-2 text-xs font-semibold text-slate-300 hover:text-white flex items-center gap-1.5 shadow-sm">
                         <svg class="w-3.5 h-3.5 text-[#22c55e]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/></svg>
                         <span>Scanner</span>
                     </a>
 
-                    <a href="{{ url('/admin/' . $tenant->slug . '/members/create') }}"
-                        class="px-5 py-2 rounded-full text-xs font-black uppercase tracking-wider text-black bg-[#22c55e] hover:bg-emerald-400 shadow-md shadow-emerald-500/20 transition-all hover:scale-105 flex items-center gap-1.5">
+                    <a href="{{ route('filament.admin.resources.members.create', ['tenant' => $tenant->slug]) }}"
+                        class="fl-primary-action px-5 py-2 rounded-full text-xs font-black uppercase tracking-wider shadow-md transition-all hover:scale-105 flex items-center gap-1.5">
                         <svg class="w-3.5 h-3.5 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
-                        <span class="text-black font-black">New Member</span>
+                        <span>New Member</span>
                     </a>
-                @else
-                    <a href="{{ url('/admin/gyms') }}"
-                        class="px-5 py-2 rounded-full text-xs font-black uppercase tracking-wider text-black bg-[#22c55e] hover:bg-emerald-400 shadow-md shadow-emerald-500/20 transition-all hover:scale-105 flex items-center gap-1.5">
+                @elseif ($tenant)
+                    <a href="{{ route('filament.admin.resources.gyms.index', ['tenant' => $tenant->slug]) }}"
+                        class="fl-primary-action px-5 py-2 rounded-full text-xs font-black uppercase tracking-wider shadow-md transition-all hover:scale-105 flex items-center gap-1.5">
                         <svg class="w-3.5 h-3.5 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
-                        <span class="text-black font-black">Review Gyms</span>
+                        <span>Review Gyms</span>
                     </a>
                 @endif
             </div>
@@ -62,7 +64,7 @@
             <div class="fl-dashboard-col">
 
                 <!-- Hero Revenue & Activity Bar Chart Card (Structured & Tightened) -->
-                <div class="fl-soft-card p-6 sm:p-7 flex flex-col justify-between">
+                <div class="fl-soft-card p-5 sm:p-6 flex flex-col justify-between">
                     <div>
                         <!-- Top Metric Header -->
                         <div class="flex items-start justify-between gap-4">
@@ -125,70 +127,72 @@
                     </div>
                 </div>
 
-                <!-- Two Sub-Cards Row (Enforced Strict Gap & Solid Pill Progress Bars) -->
+                <!-- Member and attendance summaries -->
                 <div class="fitledger-subcards-grid gap-5">
 
-                    <!-- Card 1: Active Members (Left Sub-Card) -->
-                    <div class="fl-soft-card p-6 flex flex-col justify-between">
+                    <!-- Active Members -->
+                    <div class="fl-soft-card p-5 flex flex-col justify-between">
                         <div>
-                            <div class="flex items-center justify-between text-slate-400">
+                            <div class="flex items-center justify-between gap-3 text-slate-400">
                                 <span class="text-xs font-semibold uppercase tracking-wider">{{ $data['stat1Label'] }}</span>
-                                <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+                                @if ($tenant)
+                                    <a href="{{ route('filament.admin.resources.members.index', ['tenant' => $tenant->slug]) }}"
+                                        class="fl-stat-link" aria-label="View members">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+                                    </a>
+                                @endif
                             </div>
-                            <div class="mt-2.5 flex items-baseline gap-2.5">
+                            <div class="mt-3 flex items-baseline gap-3">
                                 <span class="text-3xl font-extrabold text-white tracking-tight leading-none">
                                     {{ $data['stat1Value'] }}
-                                </span>
-                                <span class="px-2 py-0.5 rounded-full text-xs font-bold bg-[#22c55e]/15 text-[#22c55e] border border-emerald-500/20">
-                                    {{ $data['stat1Badge'] }}
                                 </span>
                             </div>
                         </div>
 
                         <div class="mt-6">
-                            <div class="flex items-center justify-between text-xs text-slate-400 mb-2 font-medium">
+                            <div class="text-xs text-slate-400 mb-3 font-medium">
                                 <span>{{ $data['stat1TargetLabel'] }}</span>
-                                <span class="text-emerald-400 font-bold font-mono">{{ $data['stat1Target'] }}%</span>
                             </div>
-                            <!-- Thick, Solid, Pill-Shaped Progress Bar (Neon Green) -->
-                            <div class="w-full h-7 rounded-full bg-[#10141d] p-0.5 flex items-center overflow-hidden border border-white/[0.04]">
-                                <div class="h-full rounded-full bg-gradient-to-r from-[#22c55e] to-[#10b981] flex items-center justify-start pl-2.5 text-[11px] font-black text-slate-950 shadow-sm transition-all duration-500"
-                                    style="width: {{ max(16, $data['stat1Target']) }}%; min-width: 38px;">
-                                    {{ $data['stat1Target'] }}%
-                                </div>
+                            <div class="fl-stat-meter" role="progressbar" aria-label="{{ $data['stat1Label'] }}"
+                                aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ $data['stat1Target'] }}"
+                                aria-valuetext="{{ $data['stat1TargetLabel'] }}">
+                                <div class="fl-stat-meter-fill" style="width: {{ $data['stat1Target'] }}%;"></div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Card 2: Check-Ins Today (Right Sub-Card) -->
-                    <div class="fl-soft-card p-6 flex flex-col justify-between">
+                    <!-- Check-Ins Today -->
+                    <div class="fl-soft-card p-5 flex flex-col justify-between">
                         <div>
-                            <div class="flex items-center justify-between text-slate-400">
+                            <div class="flex items-center justify-between gap-3 text-slate-400">
                                 <span class="text-xs font-semibold uppercase tracking-wider">{{ $data['stat2Label'] }}</span>
-                                <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+                                @if ($tenant)
+                                    <a href="{{ route('filament.admin.resources.check-ins.index', ['tenant' => $tenant->slug]) }}"
+                                        class="fl-stat-link" aria-label="View today's check-ins">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+                                    </a>
+                                @elseif ($data['isPlatformAdmin'])
+                                    <span class="px-2 py-0.5 rounded-full text-xs font-bold bg-[#22c55e]/15 text-[#22c55e] border border-emerald-500/20">
+                                        {{ $data['stat2Badge'] }}
+                                    </span>
+                                @endif
                             </div>
-                            <div class="mt-2.5 flex items-baseline gap-2.5">
+                            <div class="mt-3 flex items-baseline gap-3">
                                 <span class="text-3xl font-extrabold text-white tracking-tight leading-none">
                                     {{ $data['stat2Value'] }}
-                                </span>
-                                <span class="px-2 py-0.5 rounded-full text-xs font-bold bg-[#22c55e]/15 text-[#22c55e] border border-emerald-500/20">
-                                    {{ $data['stat2Badge'] }}
                                 </span>
                             </div>
                         </div>
 
-                        <div class="mt-6">
-                            <div class="flex items-center justify-between text-xs text-slate-400 mb-2 font-medium">
-                                <span>{{ $data['stat2Sub'] }}</span>
-                                <span class="text-emerald-400 font-bold font-mono">{{ $data['stat2Target'] }}%</span>
-                            </div>
-                            <!-- Thick, Solid, Pill-Shaped Progress Bar (Neon Green to Teal) -->
-                            <div class="w-full h-7 rounded-full bg-[#10141d] p-0.5 flex items-center overflow-hidden border border-white/[0.04]">
-                                <div class="h-full rounded-full bg-gradient-to-r from-[#22c55e] to-[#14b8a6] flex items-center justify-start pl-2.5 text-[11px] font-black text-slate-950 shadow-sm transition-all duration-500"
-                                    style="width: {{ max(16, $data['stat2Target']) }}%; min-width: 38px;">
-                                    {{ $data['stat2Target'] }}%
-                                </div>
-                            </div>
+                        <div class="mt-6 pt-4 border-t border-white/[0.06] text-xs text-slate-400 font-medium">
+                            @if ($tenant)
+                                <span class="inline-flex items-center gap-2">
+                                    <span class="fl-stat-live-dot" aria-hidden="true"></span>
+                                    {{ $data['stat2Sub'] }}
+                                </span>
+                            @else
+                                {{ $data['stat2Sub'] }}
+                            @endif
                         </div>
                     </div>
 
@@ -202,7 +206,7 @@
             <div class="fl-dashboard-col">
 
                 <!-- Card 1: Top Membership Plans -->
-                <div class="fl-soft-card p-6">
+                <div class="fl-soft-card p-5">
                     <h3 class="text-sm font-bold text-white mb-4 tracking-tight uppercase">
                         {{ $data['isPlatformAdmin'] ? 'Platform Subscription Tiers' : 'Top Membership Plans' }}
                     </h3>
@@ -232,8 +236,8 @@
                     </div>
                 </div>
 
-                <!-- Card 2: Collection Progress & Scaled-Down Radial Gauge (Contained & Halved Stroke) -->
-                <div class="fl-soft-card p-6 flex items-center justify-between gap-4 overflow-hidden">
+                <!-- Card 2: Collection Progress & Scaled-Down Radial Gauge -->
+                <div class="fl-soft-card p-5 flex items-center justify-between gap-4 overflow-hidden">
                     <div class="flex-1 min-w-0 pr-3">
                         <span class="text-xs font-semibold uppercase tracking-wider text-slate-400 block">{{ $data['ringLabel'] }}</span>
                         <span class="text-xl sm:text-2xl font-extrabold text-white block mt-1 tracking-tight leading-tight truncate">
@@ -244,14 +248,12 @@
                         </span>
                     </div>
 
-                    <!-- Compact Radial Gauge Ring (Stroke Thickness Halved to 2.8) -->
-                    <div class="relative w-16 h-16 shrink-0 flex items-center justify-center">
+                    <!-- Compact radial gauge with a 1.4px stroke -->
+                    <div class="fl-collection-ring">
                         <svg class="w-full h-full -rotate-90" viewBox="0 0 36 36">
-                            <!-- Background Track (Halved Stroke) -->
-                            <path class="text-white/[0.08]" stroke-width="2.8" stroke="currentColor" fill="none"
+                            <path class="text-white/[0.08]" stroke-width="1.4" stroke="currentColor" fill="none"
                                 d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                            <!-- Active Arc (Neon Green, Halved Stroke) -->
-                            <path stroke-linecap="round" stroke-width="2.8" stroke="#22c55e" fill="none"
+                            <path stroke-linecap="round" stroke-width="1.4" stroke="#22c55e" fill="none"
                                 stroke-dasharray="{{ max(5, $data['ringPercentage']) }}, 100"
                                 d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
                         </svg>
@@ -262,7 +264,7 @@
                 </div>
 
                 <!-- Card 3: Banner Feature Card (Turnstile Kiosk Station) -->
-                <div class="fl-soft-card p-6 relative overflow-hidden flex flex-col justify-between min-h-[170px]"
+                <div class="fl-soft-card p-5 relative overflow-hidden flex flex-col justify-between min-h-[170px]"
                     style="background: linear-gradient(145deg, #182622 0%, #161c26 60%, #131720 100%);">
                     <!-- Soft Ambient Emerald Glow -->
                     <div class="pointer-events-none absolute -right-8 -top-8 w-40 h-40 rounded-full bg-[#22c55e]/15 blur-3xl"></div>
@@ -279,7 +281,7 @@
 
                     <div class="mt-5 relative z-10">
                         <a href="{{ $data['bannerButtonUrl'] }}"
-                            class="inline-block px-5 py-2.5 rounded-full text-xs font-bold text-slate-950 bg-white hover:bg-slate-100 transition shadow-md">
+                            class="fl-banner-action rounded-full text-xs font-bold transition">
                             {{ $data['bannerButtonText'] }}
                         </a>
                     </div>

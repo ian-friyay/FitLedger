@@ -17,6 +17,10 @@ class FitLedgerDemoSeeder extends Seeder
 {
     public function run(): void
     {
+        if (app()->environment('production')) {
+            throw new \LogicException('FitLedger demo data cannot be seeded in production.');
+        }
+
         $gym = Gym::updateOrCreate(
             ['slug' => 'bakbakan-mma-fitness'],
             [
